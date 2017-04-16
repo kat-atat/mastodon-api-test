@@ -3,7 +3,7 @@
 
 {
   let appName = "testapp";
-  let appURL = "https://kat-atat.github.io/temp";
+  let appURL = "https://kat-atat.github.io/temp.html";
 
   let libodon = new Libodon(appName, appURL);
 
