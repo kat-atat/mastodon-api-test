@@ -13,6 +13,15 @@
     <script src="assets/fetch/fetch.js"></script>
     <script src="assets/libodonjs/libodon.js"></script>
     <script src="assets/traceur/bin/BrowserSystem.js"></script>
+    <style>
+      .loading {
+        background-color: : #411;
+        transition: background-color: 1s;
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
   </head>
   <body>
 
@@ -22,6 +31,14 @@
     <div>
       https://<input type="text" placeholder="example.com"/>
       <button>submit</button>
+    </div>
+
+    <div class="Timeline">
+      <div class="Timeline--Local">
+        <h1>Local</h1>
+        <button>update</button>
+        <article class="Timeline--Local--params" style="white-space: pre-wrap"></article>
+      </div>
     </div>
 
     <script>
