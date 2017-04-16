@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>mastodon</title>
+    <script src="assets/url-search-params/url-search-params.js"></script>
+    <script src="assets/fetch/fetch.js"></script>
+    <script src="assets/libodonjs/libodon.js"></script>
+  </head>
+  <body>
+
+    <h1>mastodon</h1>
+    <p>Mastodonインスタンスのアドレスを入力してください。</p>
+    <p class="dialog"></p>
+    <div>
+      https://<input type="text" placeholder="example.com"/>
+      <button>submit</button>
+    </div>
+
+    <script src="node_modules/traceur/bin/BrowserSystem.js"></script>
+    <script>
+      window.addEventListener("error", function(event) {
+        document.write(event.message||event);
+      });
+      System.import("index.js")
+      .catch(function(error){
+        document.write(error);
+      });
+    </script>
+  </body>
+</html>
