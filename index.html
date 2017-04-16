@@ -4,9 +4,15 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>mastodon</title>
+    <script>
+      window.addEventListener("error", function(event) {
+        document.write(event.message||event);
+      });
+    </script>
     <script src="assets/url-search-params/url-search-params.js"></script>
     <script src="assets/fetch/fetch.js"></script>
     <script src="assets/libodonjs/libodon.js"></script>
+    <script src="assets/traceur/bin/BrowserSystem.js"></script>
   </head>
   <body>
 
@@ -18,11 +24,7 @@
       <button>submit</button>
     </div>
 
-    <script src="assets/traceur/bin/BrowserSystem.js"></script>
     <script>
-      window.addEventListener("error", function(event) {
-        document.write(event.message||event);
-      });
       System.import("index.js")
       .catch(function(error){
         document.write(error);
