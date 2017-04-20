@@ -52,7 +52,17 @@
 
   let libodon = new Libodon(appName, appURL);
 
+  let select = document.querySelector("select");
+  let prefix = "libodon_registration_";
+  let registeredList = Object.keys(localStorage).filter((string)=> new RegExp(prefix).exec(string))
+  registeredList.forEach((string, index)=> {
+    let option = document.createElement("option");
+    option.value = string.slice(prefix.length);
+    option.textContent = index;
+    select.appendChild(option)
+  })
   let input = document.querySelector("input");
+  select.addEventListener("change", ()=> input.value = select.value)
   let submit = document.querySelector("button");
   let dialog = document.querySelector(".dialog");
 
@@ -99,7 +109,7 @@
   let since_id = 0;
   let limit = 50;
   let updateLocalParams = ()=> {
-    libodon.timeline("public", {since_id: since_id, limit: limit})
+    libodon.timeline("public", {since_id: since_id, limit: limit, local: true})
     .then((params)=> {
       localParams.textContent =
       params.map((data)=> new Card(data))
