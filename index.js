@@ -48,7 +48,7 @@
 
 {
   let appName = "testapp";
-  let appURL = "https://kat-atat.github.io/temp/";
+  let appURL = location.href;
 
   let libodon = new Libodon(appName, appURL);
 
@@ -63,10 +63,9 @@
   let localParams = local.querySelector(".Timeline--Local--params");
 
   let tryToConnect = ()=> {
-    let instance_url = "https://" + input.value;
-    let user_email = "";
+    let instance_url = input.value;
 
-    let connect = libodon.connect(instance_url, user_email);
+    let connect = libodon.connect(instance_url);
 
     connect.then((conn)=> {
       timeline.classList.add("hidden");
@@ -97,9 +96,8 @@
       tryToConnect();
     }
   });
-  let max_id = 5000;
   let since_id = 0;
-  let limit = 100;
+  let limit = 50;
   let updateLocalParams = ()=> {
     libodon.timeline("public", {since_id: since_id, limit: limit})
     .then((params)=> {
