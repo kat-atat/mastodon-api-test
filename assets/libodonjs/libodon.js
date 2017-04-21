@@ -111,6 +111,7 @@ var Libodon = (function () {
     };
     Libodon.prototype.timeline = function (target, options) {
         var endpoint = "";
+        var opt = this.timeline_options(options);
         switch (target) {
             case "home":
                 endpoint = "/api/v1/timelines/home";
@@ -119,19 +120,25 @@ var Libodon = (function () {
                 endpoint = "/api/v1/timelines/mentions";
                 break;
             case "public":
+                if (options.local === true) {
+                    opt += "&local=true";
+                }
                 endpoint = "/api/v1/timelines/public";
                 break;
             default:
                 if (target.substring(0, 1) === "#") {
+                    if (options.local === true) {
+                        opt += "&local=true";
+                    }
                     endpoint =
                         "/api/v1/timelines/tag/" + target.substring(1);
                 }
                 break;
         }
         if (endpoint == "") {
-            return new Promise(function (resolve, reject) { return reject(new Error("invalid timeline target")); });
+            return new Promise(function (resolve, reject) { return reject({ error: "invalid timeline target" }); });
         }
-        return this.get_request(endpoint + this.timeline_options(options));
+        return this.get_request(endpoint + opt);
     };
     Libodon.prototype.timeline_options = function (options) {
         var params = [];
@@ -144,27 +151,98 @@ var Libodon = (function () {
         if (options.limit) {
             params.push("limit=" + options.limit);
         }
-        if (options.local === true) {
-            /**
-             *  local (optional; public and tag timelines only): Only return statuses originating from this instance
-             *  https://github.com/tootsuite/documentation/blob/master/Using-the-API/API.md#timelines
-             */
-            params.push("local=true");
-        }
         if (params.length) {
             return "?" + params.join("&");
         }
         return "";
     };
+    Libodon.prototype.status = function (id) {
+        return this.get_request("/api/v1/statuses/" + id);
+    };
+    Libodon.prototype.account = function (id) {
+        return this.get_request("/api/v1/accounts/" + id);
+    };
+    Libodon.prototype.account_self = function () {
+        return this.get_request("/api/v1/accounts/verify_credentials");
+    };
+    Libodon.prototype.account_statuses = function (id, options) {
+        var opt = this.timeline_options(options);
+        if (options.only_media === true) {
+            opt += "&only_media=true";
+        }
+        if (options.exclude_replies === true) {
+            opt += "&exclude_replies=true";
+        }
+        return this.get_request("/api/v1/accounts/" + id + "/statuses" + opt);
+    };
+    Libodon.prototype.followers = function (id) {
+        return this.get_request("/api/v1/accounts/" + id + "/followers");
+    };
+    Libodon.prototype.relationships = function () {
+        var ids = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            ids[_i] = arguments[_i];
+        }
+        if (!ids.length) {
+            return new Promise(function (resolve, reject) { return reject({ error: "no id given" }); });
+        }
+        var query_parameters = "?";
+        if (ids.length === 1) {
+            query_parameters += "id=" + ids[0];
+        }
+        else {
+            query_parameters += "id[]=" + ids.join("&id[]=");
+        }
+        return this.get_request("/api/v1/accounts/relationships" + query_parameters);
+    };
+    Libodon.prototype.suggestions = function () {
+        return this.get_request("/api/v1/accounts/suggestions");
+    };
+    Libodon.prototype.context = function (id) {
+        return this.get_request("/api/v1/statuses/" + id + "/context");
+    };
+    Libodon.prototype.reblogged_by = function (id) {
+        return this.get_request("/api/v1/statuses/" + id + "/reblogged_by");
+    };
+    Libodon.prototype.favourited_by = function (id) {
+        return this.get_request("/api/v1/statuses/" + id + "/favourited_by");
+    };
+    Libodon.prototype.follow_remote = function (url) {
+        return this.post_request("/api/v1/follows", { uri: url });
+    };
+    Libodon.prototype.reblog = function (id) {
+        return this.post_request("/api/v1/statuses/" + id + "/reblog");
+    };
+    Libodon.prototype.unreblog = function (id) {
+        return this.post_request("/api/v1/statuses/" + id + "/unreblog");
+    };
+    Libodon.prototype.favourite = function (id) {
+        return this.post_request("/api/v1/statuses/" + id + "/favourite");
+    };
+    Libodon.prototype.unfavourite = function (id) {
+        return this.post_request("/api/v1/statuses/" + id + "/unfavourite");
+    };
+    Libodon.prototype.follow = function (id) {
+        return this.post_request("/api/v1/accounts/" + id + "/follow");
+    };
+    Libodon.prototype.unfollow = function (id) {
+        return this.post_request("/api/v1/accounts/" + id + "/unfollow");
+    };
+    Libodon.prototype.block = function (id) {
+        return this.post_request("/api/v1/accounts/" + id + "/block");
+    };
+    Libodon.prototype.unblock = function (id) {
+        return this.post_request("/api/v1/accounts/" + id + "/unblock");
+    };
     Libodon.prototype.get_request = function (endpoint) {
         if (this.connections.length === 0) {
-            return new Promise(function (resolve, reject) { return reject(new Error("not connected")); });
+            return new Promise(function (resolve, reject) { return reject({ error: "not connected" }); });
         }
         // choose recent connected
         return this.connections[this.connections.length - 1]
             .then(function (conn) {
             if (!conn.token) {
-                return new Promise(function (resolve, reject) { return reject(new Error("not connected")); });
+                return new Promise(function (resolve, reject) { return reject({ error: "not connected" }); });
             }
             var fetchHeaders = new Headers();
             fetchHeaders.set("Authorization", "Bearer " + conn.token.access_token);
@@ -173,8 +251,35 @@ var Libodon = (function () {
                 mode: "cors",
                 headers: fetchHeaders
             })
-                .then(function (res) { return res.json(); });
+                .then(function (res) { return res.json(); })
+                .then(function (array) { return array; });
+        }, function (error) { return error; });
+    };
+    Libodon.prototype.post_request = function (endpoint, data) {
+        if (this.connections.length === 0) {
+            return new Promise(function (resolve, reject) { return reject({ error: "not connected" }); });
+        }
+        // choose recent connected
+        return this.connections[this.connections.length - 1]
+            .then(function (conn) {
+            if (!conn.token) {
+                return new Promise(function (resolve, reject) { return reject({ error: "not connected" }); });
+            }
+            var server = conn.server;
+            var token = conn.token.access_token;
+            var fetchHeaders = new Headers();
+            fetchHeaders.set('Authorization', 'Bearer ' + token);
+            var body = new URLSearchParams();
+            for (var key in data)
+                body.set(key, data[key]);
+            return fetch(server + endpoint, {
+                method: 'POST',
+                mode: 'cors',
+                headers: fetchHeaders,
+                body: body
+            }).then(function (res) { return res.json(); });
         });
     };
     return Libodon;
 }());
+//# sourceMappingURL=Libodon.js.map
