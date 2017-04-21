@@ -57,8 +57,8 @@
   let registeredList = Object.keys(localStorage).filter((string)=> new RegExp(prefix).exec(string))
   registeredList.forEach((string, index)=> {
     let option = document.createElement("option");
-    option.value = string.slice(prefix.length);
-    option.textContent = index;
+    option.value =
+    option.textContent = string.slice(prefix.length);
     select.appendChild(option)
   })
   let input = document.querySelector("input");
