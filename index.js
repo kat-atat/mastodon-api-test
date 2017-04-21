@@ -48,7 +48,7 @@
 
 {
   let appName = "testapp";
-  let appURL = location.href;
+  let appURL = location.origin + location.pathname;
 
   let libodon = new Libodon(appName, appURL);
 
