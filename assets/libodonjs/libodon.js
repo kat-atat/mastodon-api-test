@@ -42,7 +42,7 @@ var Libodon = (function () {
     };
     Libodon.prototype.get_registration = function (server) {
         var registration = localStorage.getItem(Libodon.PREFIX + "_registration_" + server);
-        if (typeof registration !== "string") {
+        if (registration === null) {
             return this.register_application(server)
                 .then(function (reg) {
                 localStorage.setItem(Libodon.PREFIX + "_registration_" + server, JSON.stringify(reg));
@@ -70,7 +70,7 @@ var Libodon = (function () {
     };
     Libodon.prototype.get_token = function (server, registration) {
         var token = localStorage.getItem(Libodon.PREFIX + "_token_" + server);
-        if (typeof token !== "string") {
+        if (token === null) {
             var re_match = /[?&]code=([^&]+)/.exec(this.queryParam);
             this.queryParam = "";
             if (!re_match) {
