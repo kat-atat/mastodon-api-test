@@ -21,8 +21,8 @@
   let timeline = document.querySelector(".Timeline");
   timeline.classList.add("hidden");
   let local = timeline.querySelector(".Timeline--Local");
-  let localUpdate = local.querySelector("button");
   let localParams = local.querySelector(".Timeline--Local--params");
+  let timelineNotification = timeline.querySelector(".Timeline--Notification");
 
   let tryToConnect = ()=> {
     let instance_url = input.value;
@@ -62,30 +62,54 @@
     libodon.streaming("public", {local: true})
     .then((websocket)=> {
 
+      let paramsStack = [];
+      let paramsLlimit = 50;
+      let notificationStack = [];
+      let notificationLlimit = 50;
       websocket.addEventListener("message", (event)=> {
         let json = JSON.parse(event.data);
         let eventType = json.event;
 
-        let stack = [];
-        let limit = 50;
         let pushStatus = (status)=> {
           let account = status.account;
           let display_name = account.display_name;
-          let user_name = account.user_name;
+          let username = account.username;
           let application = status.application||{name: "web"}
           let content = status.content;
           content = content.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '');
 
           let card = `**
-    *   ${display_name}(@${user_name}) posted by: ${application.name}
+    *   ${display_name}(@${username}) posted by: ${application.name}
     *  --------------------
     *  ${content}
     **`;
-
-          if (stack.push(card) > limit) {
-            stack.pop();
+          if (paramsStack.push(card) > paramsLlimit) {
+            paramsStack.shift();
           }
-          localParams.textContent = stack.join("\n");
+          paramsStack.reverse();
+          localParams.textContent = paramsStack.join("\n");
+          paramsStack.reverse();
+        }
+
+        let pushNotification = (status)=> {
+          let account = status.account;
+          let display_name = account.display_name;
+          let username = account.username;
+          let application = status.application||{name: "web"}
+          let content = status.content;
+          content = content.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '');
+
+          let card = `**
+    *   ${display_name}(@${username}) posted by: ${application.name}
+    *  --------------------
+    *  ${content}
+    **`;
+          if (notificationStack.push(card) > notificationLlimit) {
+            notificationStack.shift();
+          }
+          notificationStack.reverse();
+          localParams.textContent = notificationStack.join("\n");
+          notificationStack.reverse();
         }
 
         if (eventType === "update") {
@@ -96,12 +120,11 @@
         else if (eventType === "delete") {
           let id = JSON.parse(json.payload);
           libodon.status(id).then((status)=>
-            pushStatus(status)
+            pushNotification(status)
           );
         }
       });
     });
   }
 
-  localUpdate.addEventListener("click", ()=> updateLocalParams());
 }

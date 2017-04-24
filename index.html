@@ -18,6 +18,17 @@
         background-color: : #411;
         transition: background-color: 1s;
       }
+      .Timeline {
+        display: flex;
+        display: -webkit-flex;
+        font-size: 2vmin;
+      }
+      .Timeline--Local {
+        width: 85.41%;
+      }
+      .Timeline--notification {
+        width: 14.58%;
+      }
       .hidden {
         display: none;
       }
@@ -38,10 +49,9 @@
 
     <div class="Timeline">
       <div class="Timeline--Local">
-        <h1>Local</h1>
-        <button>update</button>
         <article class="Timeline--Local--params" style="white-space: pre-wrap"></article>
       </div>
+      <article class="Timeline--Notification" style="white-space: pre-wrap"></article>
     </div>
 
     <script>
