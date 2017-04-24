@@ -119,9 +119,8 @@
 
         else if (eventType === "delete") {
           let id = JSON.parse(json.payload);
-          libodon.status(id).then((status)=>
-            pushNotification(status)
-          );
+          paramsStack.filter((status)=> status.id === id)
+          .forEach((status)=> pushNotification(status));
         }
       });
     });
