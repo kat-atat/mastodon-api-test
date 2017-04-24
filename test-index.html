@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>mastodon</title>
+    <script>
+      window.addEventListener("error", function(event) {
+        document.write(event.message||event);
+      });
+    </script>
+    <script src="assets/url-search-params/url-search-params.js"></script>
+    <script src="assets/fetch/fetch.js"></script>
+    <script src="test-libodon.js"></script>
+    <script src="assets/traceur/bin/BrowserSystem.js"></script>
+    <style>
+      .loading {
+        background-color: : #411;
+        transition: background-color: 1s;
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+
+    <h1>mastodon</h1>
+    <p>Mastodonインスタンスのアドレスを入力してください。</p>
+    <p class="dialog"></p>
+    <div>
+      <select>
+        <option value="" selected>--登録済みのインスタンスを選択してください--</option>
+      </select>
+      <input type="text" placeholder="example.com"/>
+      <button>submit</button>
+    </div>
+
+    <div class="Timeline">
+      <div class="Timeline--Local">
+        <h1>Local</h1>
+        <button>update</button>
+        <article class="Timeline--Local--params" style="white-space: pre-wrap"></article>
+      </div>
+    </div>
+
+    <script>
+      System.import("test-index.js")
+      .catch(function(error){
+        document.write(error);
+      });
+    </script>
+  </body>
+</html>
