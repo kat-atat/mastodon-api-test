@@ -42,7 +42,7 @@ var Libodon = (function () {
     };
     Libodon.prototype.get_registration = function (server) {
         var registration = localStorage.getItem(Libodon.PREFIX + "_registration_" + server);
-        if (registration === undefined || JSON.parse(registration).error) {
+        if (registration === null || JSON.parse(registration).error) {
             return this.register_application(server)
                 .then(function (reg) {
                 localStorage.setItem(Libodon.PREFIX + "_registration_" + server, JSON.stringify(reg));
@@ -70,7 +70,7 @@ var Libodon = (function () {
     };
     Libodon.prototype.get_token = function (server, registration) {
         var token = localStorage.getItem(Libodon.PREFIX + "_token_" + server);
-        if (token === undefined || JSON.parse(token).error) {
+        if (token === null || JSON.parse(token).error) {
             var re_match = /[?&]code=([^&]+)/.exec(this.queryParam);
             this.queryParam = "";
             if (!re_match) {
@@ -155,7 +155,7 @@ var Libodon = (function () {
         }
         return "";
     };
-    Libodon.prototype.status = function (id) {
+    Libodon.prototype.statuses = function (id) {
         return this.get_request("/api/v1/statuses/" + id);
     };
     Libodon.prototype.account = function (id) {
@@ -331,8 +331,7 @@ var Libodon = (function () {
             else {
                 url.protocol = "ws:";
             }
-            url.searchParams.set("access_token", conn.token.access_token);
-            alert(url.href)
+            url.search = [url.search, "access_token=" + conn.token.access_token].join("&");
             return new WebSocket(url.href);
         }, function (error) { return error; });
     };
