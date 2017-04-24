@@ -64,22 +64,41 @@
 
       websocket.addEventListener("message", (event)=> {
         let json = JSON.parse(event.data);
-        let toot = JSON.parse(json.payload);
+        let eventType = json.event;
 
-        let account = toot.account;
-        let display_name = account.display_name||"";
-        let user_name = account.user_name||"";
-        let application = toot.application||{name: "web"}
-        let content = toot.content||"";
-        content = content.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '');
+        let stack = [];
+        let limit = 50;
+        let pushStatus = (status)=> {
+          let account = status.account;
+          let display_name = account.display_name;
+          let user_name = account.user_name;
+          let application = status.application||{name: "web"}
+          let content = status.content;
+          content = content.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '');
 
-        let card = `**
-  *   ${display_name}(@${user_name}) posted by: ${application.name}
-  *  --------------------
-  *  ${content}
-  **`;
-        localParams.textContent = card + "\n" + localParams.textContent;
+          let card = `**
+    *   ${display_name}(@${user_name}) posted by: ${application.name}
+    *  --------------------
+    *  ${content}
+    **`;
 
+          if (stack.push(card) > limit) {
+            stack.pop();
+          }
+          localParams.textContent = stack.join("\n");
+        }
+
+        if (eventType === "update") {
+          let status = JSON.parse(json.payload);
+          pushStatus(status);
+        }
+
+        else if (eventType === "delete") {
+          let id = JSON.parse(json.payload);
+          libodon.status(id).then((status)=>
+            pushStatus(status)
+          );
+        }
       });
     });
   }
