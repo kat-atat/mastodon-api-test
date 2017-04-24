@@ -42,7 +42,7 @@ var Libodon = (function () {
     };
     Libodon.prototype.get_registration = function (server) {
         var registration = localStorage.getItem(Libodon.PREFIX + "_registration_" + server);
-        if (registration === null) {
+        if (registration === undefined || JSON.parse(registration).error) {
             return this.register_application(server)
                 .then(function (reg) {
                 localStorage.setItem(Libodon.PREFIX + "_registration_" + server, JSON.stringify(reg));
@@ -70,7 +70,7 @@ var Libodon = (function () {
     };
     Libodon.prototype.get_token = function (server, registration) {
         var token = localStorage.getItem(Libodon.PREFIX + "_token_" + server);
-        if (token === null) {
+        if (token === undefined || JSON.parse(token).error) {
             var re_match = /[?&]code=([^&]+)/.exec(this.queryParam);
             this.queryParam = "";
             if (!re_match) {
@@ -267,17 +267,79 @@ var Libodon = (function () {
             var server = conn.server;
             var token = conn.token.access_token;
             var fetchHeaders = new Headers();
-            fetchHeaders.set('Authorization', 'Bearer ' + token);
+            fetchHeaders.set("Authorization", "Bearer " + token);
             var body = new URLSearchParams();
             for (var key in data)
                 body.set(key, data[key]);
             return fetch(server + endpoint, {
-                method: 'POST',
-                mode: 'cors',
+                method: "POST",
+                mode: "cors",
                 headers: fetchHeaders,
                 body: body
             }).then(function (res) { return res.json(); });
         });
+    };
+    Libodon.prototype.streaming_options = function (options) {
+        var params = [];
+        if (options) {
+        }
+        return "?" + params.join("&");
+    };
+    Libodon.prototype.streaming = function (target, options) {
+        var endpoint = "//api/v1/streaming/";
+        var opt = this.streaming_options(options);
+        switch (target) {
+            case "user":
+                opt += "&stream=user";
+                break;
+            case "public":
+                if (options.local === true) {
+                    opt += "&stream=public:local";
+                }
+                else {
+                    opt += "&stream=public";
+                }
+                break;
+            default:
+                if (target.substring(0, 1) === "#") {
+                    opt += "&tag=" + target.substring(1); // XXX: valid name is "&hashtag=" ?
+                    if (options.local === true) {
+                        // TODO: support with {local: true}
+                    }
+                }
+                break;
+        }
+        if (endpoint === "") {
+            return new Promise(function (resolve, reject) {
+                return reject({ error: "invalid streaming target" });
+            });
+        }
+        return this.streaming_request(endpoint + opt);
+    };
+    Libodon.prototype.streaming_request = function (endpoint) {
+        if (this.connections.length === 0) {
+            return new Promise(function (resolve, reject) {
+                return reject({ error: "not connected" });
+            });
+        }
+        // choose recent connected
+        return this.connections[this.connections.length - 1]
+            .then(function (conn) {
+            if (!conn.token) {
+                return new Promise(function (resolve, reject) {
+                    return reject({ error: "not connected" });
+                });
+            }
+            var url = new URL(conn.server + endpoint);
+            if (url.protocol === "https:") {
+                url.protocol = "wss:";
+            }
+            else {
+                url.protocol = "ws:";
+            }
+            url.searchParams.set("access_token", conn.token.access_token);
+            return new WebSocket(url.href);
+        }, function (error) { return error; });
     };
     return Libodon;
 }());
