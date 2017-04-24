@@ -279,41 +279,35 @@ var Libodon = (function () {
             }).then(function (res) { return res.json(); });
         });
     };
-    Libodon.prototype.streaming_options = function (options) {
+    Libodon.prototype.streaming_options = function (target, options) {
         var params = [];
-        if (options) {
+        if (target === "public") {
+            if (options.local === true) {
+                params.push("stream=public:local");
+            }
+            else {
+                params.push("stream=public");
+            }
+        }
+        if (target === "user") {
+            params.push("stream=user");
+        }
+        if (target.substring(0, 1) === "#") {
+            params.push("stream=hashtag&tag=" + target.substring(1));
+            if (options.local === true) {
+                // TODO: support with {local: true}
+            }
+        }
+        if (params.length === 0) {
+            return new Promise(function (resolve, reject) {
+                return reject({ error: "invalid streaming target" });
+            });
         }
         return "?" + params.join("&");
     };
     Libodon.prototype.streaming = function (target, options) {
         var endpoint = "//api/v1/streaming/";
-        var opt = this.streaming_options(options);
-        switch (target) {
-            case "user":
-                opt += "&stream=user";
-                break;
-            case "public":
-                if (options.local === true) {
-                    opt += "&stream=public:local";
-                }
-                else {
-                    opt += "&stream=public";
-                }
-                break;
-            default:
-                if (target.substring(0, 1) === "#") {
-                    opt += "&tag=" + target.substring(1); // XXX: valid name is "&hashtag=" ?
-                    if (options.local === true) {
-                        // TODO: support with {local: true}
-                    }
-                }
-                break;
-        }
-        if (endpoint === "") {
-            return new Promise(function (resolve, reject) {
-                return reject({ error: "invalid streaming target" });
-            });
-        }
+        var opt = this.streaming_options(target, options);
         return this.streaming_request(endpoint + opt);
     };
     Libodon.prototype.streaming_request = function (endpoint) {
@@ -331,16 +325,14 @@ var Libodon = (function () {
                 });
             }
             var url = new URL(conn.server + endpoint);
-alert(url.href);
             if (url.protocol === "https:") {
                 url.protocol = "wss:";
             }
             else {
                 url.protocol = "ws:";
             }
-alert(url.href);
             url.searchParams.set("access_token", conn.token.access_token);
-alert(url.href);
+            alert(url.href)
             return new WebSocket(url.href);
         }, function (error) { return error; });
     };

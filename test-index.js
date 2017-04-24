@@ -21,8 +21,8 @@
   let timeline = document.querySelector(".Timeline");
   timeline.classList.add("hidden");
   let local = timeline.querySelector(".Timeline--Local");
-  let localUpdate = local.querySelector("button");
   let localParams = local.querySelector(".Timeline--Local--params");
+  let timelineNotification = timeline.querySelector(".Timeline--Notification");
 
   let tryToConnect = ()=> {
     let instance_url = input.value;
@@ -62,27 +62,68 @@
     libodon.streaming("public", {local: true})
     .then((websocket)=> {
 
+      let paramsStack = [];
+      let paramsLlimit = 50;
+      let notificationStack = [];
+      let notificationLlimit = 50;
       websocket.addEventListener("message", (event)=> {
         let json = JSON.parse(event.data);
-        let toot = JSON.parse(json.payload);
+        let eventType = json.event;
 
-        let account = toot.account;
-        let display_name = account.display_name||"";
-        let user_name = account.user_name||"";
-        let application = toot.application||{name: "web"}
-        let content = toot.content||"";
-        content = content.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '');
+        let pushStatus = (status)=> {
+          let account = status.account;
+          let display_name = account.display_name;
+          let username = account.username;
+          let application = status.application||{name: "web"}
+          let content = status.content;
+          content = content.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '');
 
-        let card = `**
-  *   ${display_name}(@${user_name}) posted by: ${application.name}
-  *  --------------------
-  *  ${content}
-  **`;
-        localParams.textContent = card + "\n" + localParams.textContent;
+          let card = `**
+    *   ${display_name}(@${username}) posted by: ${application.name}
+    *  --------------------
+    *  ${content}
+    **`;
+          if (paramsStack.push(card) > paramsLlimit) {
+            paramsStack.shift();
+          }
+          paramsStack.reverse();
+          localParams.textContent = paramsStack.join("\n");
+          paramsStack.reverse();
+        }
 
+        let pushNotification = (status)=> {
+          let account = status.account;
+          let display_name = account.display_name;
+          let username = account.username;
+          let application = status.application||{name: "web"}
+          let content = status.content;
+          content = content.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '');
+
+          let card = `**
+    *   ${display_name}(@${username}) posted by: ${application.name}
+    *  --------------------
+    *  ${content}
+    **`;
+          if (notificationStack.push(card) > notificationLlimit) {
+            notificationStack.shift();
+          }
+          notificationStack.reverse();
+          localParams.textContent = notificationStack.join("\n");
+          notificationStack.reverse();
+        }
+
+        if (eventType === "update") {
+          let status = JSON.parse(json.payload);
+          pushStatus(status);
+        }
+
+        else if (eventType === "delete") {
+          let id = JSON.parse(json.payload);
+          paramsStack.filter((status)=> status.id === id)
+          .forEach((status)=> pushNotification(status));
+        }
       });
     });
   }
 
-  localUpdate.addEventListener("click", ()=> updateLocalParams());
 }
