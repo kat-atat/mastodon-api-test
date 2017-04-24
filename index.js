@@ -1,51 +1,3 @@
-
-  class Card {
-    constructor(data) {
-      this.created_at = data.created_at;
-      // sample: '2017-04-15T13:47:21.336Z'
-
-      this.application = data.application;
-      // sample: { name: 'Amaroq', website: 'https://appsto.re/us/OfFxib.i' }
-      if (this.application === null) {
-        // empty_application
-        this.application = {
-          name: "web",
-          website: ""
-        };
-      }
-
-      /**
-       * .account
-       */
-      this.display_name = data.account.display_name;
-      this.username = data.account.username;
-      this.locked = data.account.locked;
-
-      /**
-       * generic
-       */
-      // username と acct の示す値が同一の場合、ローカルアカウントと判定します。
-      this.isLocal = data.account.username === data.account.acct;
-
-      // htmlタグを排除したテキストデータを保持します。
-      this.textContent = data.content.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '');
-      if (this.textContent === "") {
-        // empty_textContent
-        this.textContent = "**このパオはパオパオされました**";
-      }
-    }
-
-    getConcatenated() {
-      return `**
-*   ${this.display_name}(@${this.username}) posted by: ${this.application.name}
-*  --------------------
-*  ${this.textContent}
-**`;
-    }
-  }
-
-
-
 {
   let appName = "testapp";
   let appURL = location.origin + location.pathname;
@@ -106,15 +58,29 @@
       tryToConnect();
     }
   });
-  let since_id = 0;
-  let limit = 50;
   let updateLocalParams = ()=> {
-    libodon.timeline("public", {since_id: since_id, limit: limit, local: true})
-    .then((params)=> {
-      localParams.textContent =
-      params.map((data)=> new Card(data))
-      .filter((card)=> card.isLocal)
-      .map((card)=> card.getConcatenated());
+    libodon.streaming("public", {local: true})
+    .then((websocket)=> {
+
+      websocket.addEventListener("message", (event)=> {
+        let json = JSON.parse(event.data);
+        let toot = JSON.parse(json.payload);
+
+        let account = toot.account;
+        let display_name = account.display_name||"";
+        let user_name = account.user_name||"";
+        let application = toot.application||{name: "web"}
+        let content = toot.content||"";
+        content = content.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '');
+
+        let card = `**
+  *   ${display_name}(@${user_name}) posted by: ${application.name}
+  *  --------------------
+  *  ${content}
+  **`;
+        localParams.textContent = card + "\n" + localParams.textContent;
+
+      });
     });
   }
 
