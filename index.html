@@ -3,62 +3,11 @@
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>mastodon</title>
-    <script>
-      window.addEventListener("error", function(event) {
-        document.write(event.message||event);
-      });
-    </script>
-    <script src="assets/url-search-params/url-search-params.js"></script>
-    <script src="assets/fetch/fetch.js"></script>
+    <title>mastodon-api-test</title>
     <script src="assets/libodonjs/libodon.js"></script>
-    <script src="assets/traceur/bin/BrowserSystem.js"></script>
-    <style>
-      .loading {
-        background-color: : #411;
-        transition: background-color: 1s;
-      }
-      .Timeline {
-        display: flex;
-        display: -webkit-flex;
-        font-size: 2vmin;
-      }
-      .Timeline--Local {
-        width: 85.41%;
-      }
-      .Timeline--notification {
-        width: 14.58%;
-      }
-      .hidden {
-        display: none;
-      }
-    </style>
+    <script type="module" src="./src/mastodon-api-test.js"></script>
   </head>
   <body>
-
-    <h1>mastodon</h1>
-    <p>Mastodonインスタンスのアドレスを入力してください。</p>
-    <p class="dialog"></p>
-    <div>
-      <select>
-        <option value="" selected>--登録済みのインスタンスを選択してください--</option>
-      </select>
-      <input type="text" placeholder="example.com"/>
-      <button>submit</button>
-    </div>
-
-    <div class="Timeline">
-      <div class="Timeline--Local">
-        <article class="Timeline--Local--params" style="white-space: pre-wrap"></article>
-      </div>
-      <article class="Timeline--Notification" style="white-space: pre-wrap"></article>
-    </div>
-
-    <script>
-      System.import("index.js")
-      .catch(function(error){
-        document.write(error);
-      });
-    </script>
+    <mastodon-api-test></mastodon-api-test>
   </body>
 </html>
