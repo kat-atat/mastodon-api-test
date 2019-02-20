@@ -6,10 +6,14 @@ const state = {
     {url: "hogehoge.mastodon.com", username: "hogemaru", selected: false},
     {url: "huga.tootsuite.com", username: "hugapoyo", selected: true},
   ],
-  dialog_text: "ready.",
-  TEXT_INIT: "ready.",
-  TEXT_SUCCESED: "トークンの取得に成功しました。💪",
-  TEXT_FAILED: "トークンの取得に失敗しました。👾",
+  dialog_text: "init",
+  dialog_type: "init",
+  DIALOG_TYPE_INIT: "init",
+  DIALOG_TYPE_WARN: "warn",
+  DIALOG_TYPE_DANGER: "danger",
+  DIALOG_TEXT_INIT: "ready.",
+  DIALOG_TEXT_SUCCESED: "トークンの取得に成功しました。💪",
+  DIALOG_TEXT_FAILED: "トークンの取得に失敗しました。👾",
   columnIndex: 0,
 };
 
@@ -18,17 +22,21 @@ const action = {
   onup: (value)=> (state)=> ({count: state.count - value}),
   onupdate: ()=> (state)=> {
     switch (state.count) {
-      case 0: return {dialog_text: state.TEXT_INIT};
-      case 1: return {dialog_text: state.TEXT_SUCCESED};
-      case 2: return {dialog_text: state.TEXT_FAILED};
+      case 1: return {dialog_text: state.DIALOG_TEXT_SUCCESED, dialog_type: state.DIALOG_TYPE_INIT};
+      case 2: return {dialog_text: state.DIALOG_TEXT_FAILED, dialog_type: state.DIALOG_TYPE_WARN};
+      default: return {dialog_text: state.DIALOG_TEXT_INIT, dialog_type: state.DIALOG_TYPE_INIT};
     }
   },
   oncolumnchange: (value)=> (state)=> ({colmnIndex: value}),
 };
 
-const dialog = ({dialog_text})=>
+const dialog = ({dialog_text, dialog_type})=>
   h("div", {class: "Dialog"}, [
-    h("p", {}, dialog_text),
+    ()=> {switch (dialog_type) {
+      case "warn": return h("p", {style: "color: orange"}, dialog_text)
+      case "danger": return h("p", {style: "color: red"}, dialog_text)
+      default: return h("p", {}, dialog_text)
+    }},
   ])
 
 const register = (state, action)=> 
