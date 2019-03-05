@@ -1,0 +1,23 @@
+{
+  pendingAuthCode: "",
+  accounts: {
+  },
+  columnIndex: 0,
+  dialog_text: "",
+  DIALOG_TYPE_DEFAULT: "default",
+  DIALOG_TYPE_WARN: "warn",
+  DIALOG_TYPE_DANGER: "danger",
+
+  msg: "ready.",
+  msg2: "トークンの取得に成功しました。💪",
+  msg3: "トークンの取得に失敗しました。👾",
+}
+
+
+	function get_authorization_url(server, registration, libodon){
+		let endpoint = server+'/oauth/authorize?response_type=code'
+		endpoint += '&client_id='+registration.client_id
+		endpoint += '&redirect_uri='+registration.redirect_uri
+		if(libodon.scope) endpoint += '&scope='+encodeURI(libodon.scope)
+		return endpoint
+	}

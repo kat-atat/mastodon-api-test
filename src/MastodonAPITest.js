@@ -5,11 +5,13 @@ export default class MastodonAPITest extends HTMLElement {
     super();
     let shadow = this.attachShadow({mode: "open"});
     shadow.innerHTML = TEMPLATE;
-    vdom(shadow.querySelector(".main"));
+    this.vdom = vdom(shadow.querySelector(".main"));
+    this.vdom.set({
+      statusText: "ready.",
+    });
   }
 }
 
 const TEMPLATE = `
-<style></style>
 <div class="main"></div>
 `;

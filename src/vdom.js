@@ -1,80 +1,61 @@
 import {h, app} from "./hyperapp.js";
+import testState from "./testState.js";
 
 const state = {
-  count: 0,
-  instances: [
-    {url: "hogehoge.mastodon.com", username: "hogemaru", selected: false},
-    {url: "huga.tootsuite.com", username: "hugapoyo", selected: true},
-  ],
-  dialog_text: "init",
-  dialog_type: "init",
-  DIALOG_TYPE_INIT: "init",
-  DIALOG_TYPE_WARN: "warn",
-  DIALOG_TYPE_DANGER: "danger",
-  DIALOG_TEXT_INIT: "ready.",
-  DIALOG_TEXT_SUCCESED: "トークンの取得に成功しました。💪",
-  DIALOG_TEXT_FAILED: "トークンの取得に失敗しました。👾",
-  columnIndex: 0,
+  statusText: "",
+  instances: [],
+  selectedInstanceIndex: 0,
+  KEYCODE_ENTER: 13,
+  // ...testState,
 };
 
 const action = {
-  ondown: (value)=> (state)=> ({count: state.count + value}),
-  onup: (value)=> (state)=> ({count: state.count - value}),
-  onupdate: ()=> (state)=> {
-    switch (state.count) {
-      case 1: return {dialog_text: state.DIALOG_TEXT_SUCCESED, dialog_type: state.DIALOG_TYPE_INIT};
-      case 2: return {dialog_text: state.DIALOG_TEXT_FAILED, dialog_type: state.DIALOG_TYPE_WARN};
-      default: return {dialog_text: state.DIALOG_TEXT_INIT, dialog_type: state.DIALOG_TYPE_INIT};
+  onkeydown: ({keyCode})=> (state)=> {
+    switch (keyCode) {
+      case state.KEYCODE_ENTER: return action.register(state);
     }
   },
-  oncolumnchange: (value)=> (state)=> ({colmnIndex: value}),
+  onclick: ()=> (state)=> action.register(state),
+
+  register: (state)=> {
+    return {};
+  },
+
+  set: (newState)=> (state)=> ({state, ...newState}),
 };
 
-const dialog = ({dialog_text, dialog_type})=>
-  h("div", {class: "Dialog"}, [
-    ()=> {switch (dialog_type) {
-      case "warn": return h("p", {style: "color: orange"}, dialog_text)
-      case "danger": return h("p", {style: "color: red"}, dialog_text)
-      default: return h("p", {}, dialog_text)
-    }},
+const statusText = (state, action)=>
+  h("div", {class: "statusText"}, [
+    h("p", {}, state.statusText),
   ])
 
 const register = (state, action)=> 
-  h("div", {class: "Register"}, [
-    h("input", {type: "text", placeholder: "mastodon.example.com"}),
-    h("button", {}, "CONNECT"),
+  h("div", {class: "register"}, [
+    h("label", {}, [
+      h("span", {}, "https://"),
+      h("input", {
+        type: "text",
+        placeholder: "mastodon.example.com",
+        onkeydown: (ev)=> action.onkeydown(ev),
+      }),
+    ]),
+    h("button", {onclick: ()=> action.onclick()}, "CONNECT"),
   ])
 
-const selector = ({instances})=>
-  h("div", {class: "Selector"}, [
-    h("select", {disabled: instances.length === 0}, [
-      ...instances.map(({url, username, selected})=>
-        h("option", {value: "", selected: selected}, `${username}@${url}`)),
+const selector = (state, action)=>
+  h("div", {class: "selector"}, [
+    h("select", {disabled: state.instances.length === 0}, [
+      ...state.instances.map(({url, username}, index)=>
+        h("option", {value: "", selected: index === state.selectedInstanceIndex}, `${username}@${url}`)
+      ),
     ]),
   ])
 
-const timeline = ()=>
-  h("div", {}, [
-    h("div", {}, "this is toot"),
-    h("div", {}, "this is toot"),
-    h("div", {}, "this is toot"),
-  ])
-
-const counter = ({count, ondown, onup, onupdate})=> 
-  h("div", {onupdate: ()=> onupdate()}, [
-    h("h1", {}, count),
-    h("button", {onclick: ()=> ondown(1)}, "-"),
-    h("button", {onclick: ()=> onup(1)}, "+"),
-  ])
-
-
 const view = (state, action)=>
   h("div", {}, [
-    h(dialog, state),
-    h(register, state),
-    h(selector, state),
-    h(timeline, state),
-    h(counter, {...state, ...action}),
+    statusText,
+    register,
+    selector,
   ])
 
 export default (node)=> app(state, action, view, node);
