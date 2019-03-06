@@ -1,0 +1,16 @@
+{
+  "name": "mastodon-api-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "hyperapp": "^1.2.9",
+    "dev-kit": "git+https://github.com/kat-atat/dev-kit.git"
+  }
+}
