@@ -1,13 +1,14 @@
-
 const APIUtil = {
 
-  // Returns {id, client_id, client_secret} || {error}
-  requestApp: async ({mastodon_url, client_name, redirect_uris, scopes, website=""})=> {
+  // returns {name, website, client_id, client_secret, id, redirect_uri} || {error}
+  // reference from https://docs.joinmastodon.org/api/rest/apps/#post-api-v1-apps
+  requestApp: async ({mastodon_url, client_name, redirect_uris, scopes, website=null})=> {
+    const api_url = mastodon_url + "/api/v1/apps";
 
-    const request = new Request(mastodon_url + "/api/v1/apps", {
+    let request = new Request(api_url, {
       method: "POST",
       mode: "cors",
-      body: APIUtil.body({
+      body: new URLSearchParams({
         client_name,
         redirect_uris,
         scopes,
@@ -15,7 +16,6 @@ const APIUtil = {
         website,
       }),
     });
-
     let response = await fetch(request);
     let json = await response.json();
     APIUtil.onresponsed(json);
@@ -23,13 +23,15 @@ const APIUtil = {
     return json;
   },
 
-  // Returns {access_token, token_type, scope, created_at} || {error}
+  // returns {access_token, created_at, scope, token_type} || {error}
+  // reference from https://docs.joinmastodon.org/api/authentication/#post-oauth-token
   requestToken: async ({mastodon_url, client_id, client_secret, code, redirect_uri})=> {
+    const api_url = mastodon_url + "/oauth/token";
 
-    const request = new Request(mastodon_url + "/oauth/token", {
+    let request = new Request(api_url, {
       method: "POST",
       mode: "cors",
-      body: APIUtil.body({
+      body: new URLSearchParams({
         client_id,
         client_secret,
         grant_type: "authorization_code",
@@ -45,12 +47,15 @@ const APIUtil = {
     return json;
   },
 
+  // returns {void}
+  // reference from https://docs.joinmastodon.org/api/authentication/#post-oauth-revoke
   requestRevoke: async ({mastodon_url, client_id, client_secret})=> {
+    const api_url = mastodon_url + "/oauth/revoke";
 
-    const request = new Request(mastodon_url + "/oauth/revoke", {
+    let request = new Request(api_url, {
       method: "POST",
       mode: "cors",
-      body: APIUtil.body({
+      body: new URLSearchParams({
         client_id,
         client_secret,
       }),
@@ -63,9 +68,12 @@ const APIUtil = {
     return json;
   },
 
+  // create auth link url
+  // returns {URL}
+  // reference from https://docs.joinmastodon.org/api/authentication/#get-oauth-authorize
   createAuthUrl: ({mastodon_url, client_id, redirect_uri})=> {
-
     const url = new URL(mastodon_url + "/oauth/authorize");
+
     const s = url.searchParams;
     s.set("client_id", client_id);
     s.set("redirect_uri", redirect_uri);
@@ -76,21 +84,13 @@ const APIUtil = {
 
   onresponsed: (responsed)=> {},
 
-  body: (params)=> {
-    const body = new URLSearchParams();
-    for (let key in params) {
-      body.set(key, params[key]);
-    }
-    return body;
-  },
-
   __requestTokenByPassword: async ({mastodon_url, client_id, client_secret, username, password})=> {
     const api_url = mastodon_url + "/oauth/authorize";
 
-    let response = await fetch(api_url, {
+    let request = new Request(api_url, {
       method: "POST",
       mode: "cors",
-      body: APIUtil.body({
+      body: new URLSearchParams({
         client_id,
         client_secret,
         grant_type: "password",
@@ -99,29 +99,13 @@ const APIUtil = {
       }),
     });
 
-    let json = await response.json();
-    APIUtil.onresponsed(json);
-
-    return json;
-  },
-
-  __requestRevoke: async ({mastodon_url, client_id, client_secret})=> {
-    const api_url = mastodon_url + "/oauth/revoke";
-
-    let response = await fetch(api_url, {
-      method: "POST",
-      mode: "cors",
-      body: APIUtil.body({
-        client_id,
-        client_secret,
-      }),
-    });
-
+    let response = await fetch(request);
     let json = await response.json();
     APIUtil.onresponsed(json);
 
     return json;
   },
 }
+
 
 export default APIUtil;

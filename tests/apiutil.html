@@ -123,22 +123,6 @@ window.run2 = ()=> {
   console.log(JSON.stringify(state));
 }
 
-window.run3 = ()=> {
-  let client =
-  state.clients.filter((client)=> client.mastodon_url === state.mastodon_url);
-  APIUtil.requestRevoke(registeredDetail)
-  .then(()=> {
-    localStorage.removeItem("ID");
-    localStorage.removeItem("MASTODON_URL");
-    localStorage.removeItem("CLIENT_ID");
-    localStorage.removeItem("CLIENT_SECRET");
-    localStorage.removeItem("ACCESS_TOKEN");
-    localStorage.removeItem("TOKEN_TYPE");
-    localStorage.removeItem("SCOPE");
-    localStorage.removeItem("CREATED_AT");
-    window.location.href = redirect_uri;
-  });
-}
 
 APIUtil.onresponsed = (responsed)=> {
   console.log(JSON.stringify(responsed));
