@@ -69,9 +69,7 @@ const APIUtilV2 = {
           const request = new Request(api_url, {
             method: "GET",
             mode: "cors",
-            headers: {
-              Authorization: `Bearer ${access_token}`
-            }
+            headers: {Authorization: `Bearer ${access_token}`},
           });
 
           return await APIUtilV2.handleRequest(request);
@@ -86,10 +84,14 @@ const APIUtilV2 = {
       searchParams.append("min_id", min_id);
       searchParams.append("limit", limit);
       return {
-        home: async ({access_token}={access_token: ""})=> {
+        home: async ({access_token})=> {
           const api_url = new URL(mastodon_url + "/api/v1/timelines/home");
           api_url.search = searchParams;
-          const request = new Request(api_url, {method: "GET", mode: "cors"});
+          const request = new Request(api_url, {
+            method: "GET",
+            mode: "cors",
+            headers: {Authorization: `Bearer ${access_token}`},
+          });
       
           return await APIUtilV2.handleRequest(request);
         },
