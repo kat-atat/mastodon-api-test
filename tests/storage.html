@@ -37,3 +37,19 @@ console.log(restored.string.constructor === String);
 console.log(restored.NULL === null);
 console.log(restored.UNDEFINED === undefined);
 </script>
+
+<script type="module">
+import storage from "../src/storage.js";
+
+const test = {
+  value: "test",
+};
+
+storage.set("TEST", test);
+const restored = storage.get("TEST");
+console.log(restored.value === test.value);
+
+storage.remove("TEST");
+const removed = storage.get("TEST");
+console.log(removed === null);
+</script>
