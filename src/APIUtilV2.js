@@ -14,11 +14,8 @@ const APIUtilV2 = {
           website,
         }),
       });
-      let response = await fetch(request);
-      let json = await response.json();
-      APIUtilV2.onresponsed(json);
-  
-      return json;
+
+      return await APIUtilV2.handleRequest(request);
     },
   
     token: async ({client_id, client_secret, code, redirect_uri})=> {
@@ -35,12 +32,8 @@ const APIUtilV2 = {
           redirect_uri,
         }),
       });
-  
-      let response = await fetch(request);
-      let json = await response.json();
-      APIUtilV2.onresponsed(json);
-  
-      return json;
+
+      return await APIUtilV2.handleRequest(request);
     },
   
     revoke: async ({client_id, client_secret})=> {
@@ -54,12 +47,8 @@ const APIUtilV2 = {
           client_secret,
         }),
       });
-  
-      let response = await fetch(request);
-      let json = await response.json();
-      APIUtilV2.onresponsed(json);
-  
-      return json;
+
+      return await APIUtilV2.handleRequest(request);
     },
 
     authLink: ({client_id, redirect_uri})=> {
@@ -85,11 +74,7 @@ const APIUtilV2 = {
             }
           });
 
-          let response = await fetch(request);
-          let json = await response.json();
-          APIUtilV2.onresponsed(json);
-
-          return json;
+          return await APIUtilV2.handleRequest(request);
         },
       }
     },
@@ -105,12 +90,8 @@ const APIUtilV2 = {
           const api_url = new URL(mastodon_url + "/api/v1/timelines/home");
           api_url.search = searchParams;
           const request = new Request(api_url, {method: "GET", mode: "cors"});
-    
-          let response = await fetch(request);
-          let json = await response.json();
-          APIUtilV2.onresponsed(json);
       
-          return json;
+          return await APIUtilV2.handleRequest(request);
         },
 
         federated: async ({only_media=false}={})=> {
@@ -119,12 +100,8 @@ const APIUtilV2 = {
           searchParams.append("only_media", only_media);
           api_url.search = searchParams;
           const request = new Request(api_url, {method: "GET", mode: "cors"});
-    
-          let response = await fetch(request);
-          let json = await response.json();
-          APIUtilV2.onresponsed(json);
-      
-          return json;
+
+          return await APIUtilV2.handleRequest(request);
         },
 
         local: async ({only_media=false}={})=> {
@@ -133,20 +110,21 @@ const APIUtilV2 = {
           searchParams.append("only_media", only_media);
           api_url.search = searchParams;
           const request = new Request(api_url, {method: "GET", mode: "cors"});
-    
-          let response = await fetch(request);
-          let json = await response.json();
-          APIUtilV2.onresponsed(json);
-      
-          return json;
+
+          return await APIUtilV2.handleRequest(request);
         },
       };
     },
   }),
 
-  handleRequest: (request)=> {
-    
+  handleRequest: async (request)=> {
+    let response = await fetch(request);
+    let json = await response.json();
+    APIUtilV2.onresponsed(json);
+    return json;
   },
+
+  onresponsed: (responsed)=> {},
 }
 
 export default APIUtilV2;
