@@ -15,25 +15,16 @@
 
 <script type="module">
 import APIUtil from "../src/APIUtilV2.js";
-import storage from "../src/storage.js";
 
 const mastodon_url = "https://mental.social";
 
 window.run1 = ()=> {
   APIUtil.url(mastodon_url)
-  .timeline({limit: 40})
+  .timeline()
   .local()
   .then((statuses)=> statuses.forEach(({content})=> console.log(content)));
 }
 
-window.run2 = ()=> console.log(JSON.stringify(state));
-
 APIUtil.onresponsed = (responsed)=> console.log(responsed);
 
-window.onpagehide =
-window.onbeforeunload = 
-window.onunload = ()=> {
-  storage.set("STATE", state);
-  console.log("state saved");
-}
 </script>
