@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>mastodon-api-test</title>
+    <script src="../node_modules/dev-kit/dist/dev-kit.js"></script>
+  </head>
+  <body>
+    <dev-kit></dev-kit>
+  </body>
+</html>
+
+
+
+<script type="module">
+import APIUtil from "../src/APIUtilV2.js";
+import storage from "../src/storage.js";
+
+
+let state = storage.get("STATE") || {
+  clients: [],
+  accounts: [],
+  pending: null,
+  _responses: [],
+}
+
+const appDetail = {
+  client_name: "test",
+  scopes: "read write follow",
+  website: "",
+}
+
+const redirect_uri = "http://localhost:5000/tests/apiutilv2.html";
+
+
+let mastodon_url = "https://mental.social";
+let acct = "carrot";
+let code = new URL(document.location).searchParams.get("code");
+let useToken = true;
+
+(async ()=> {
+  // when auth redirected
+  if (code && state.pending !== null) {
+    let mastodon_url = state.pending.mastodon_url;
+    let token = await APIUtil.url(mastodon_url)
+    .token({...state.pending, code})
+    if (token.error) return;
+    let account_detail = await APIUtil.url(mastodon_url).account().self(token);
+    let account = {...token, mastodon_url, acct: account_detail.acct};
+    // TODO: account = {mastodon_url, acct, access_token, created_at, scope, token_type};
+    state.accounts.push(account);
+    state.pending = null;
+  }
+})();
+
+window.run1 = async ()=> {
+  if (useToken) {
+    let client = state.clients.filter((client)=> mastodon_url === client.mastodon_url)[0];
+    if (client === undefined) {
+      console.log("request apps");
+      let createdApp = await APIUtil.url(mastodon_url).app({...appDetail, redirect_uris: redirect_uri});
+      client = {...createdApp, mastodon_url};
+      // TODO: client = {mastodon_url, client_id, client_secret, redirect_uri};
+      state.clients.push(client);
+      console.log("client added");
+    }
+
+    let account = state.accounts
+    .filter((account)=> mastodon_url === account.mastodon_url)
+    .filter((account)=> acct === account.acct)[0];
+    if (account === undefined) {
+      console.log("create auth link");
+      state.pending = {...client, mastodon_url, redirect_uri};
+      // state.pending = {mastodon_url, client_id, client_secret, redirect_uri};
+      let authLink = APIUtil.url(mastodon_url).authLink(state.pending);
+      return window.location.href = authLink;
+    }
+    console.log("auth done.");
+  }
+}
+
+window.run2 = ()=> console.log(JSON.stringify(state));
+
+window.run3 = ()=> state = {
+  clients: [],
+  accounts: [],
+  pending: null,
+  _responses: [],
+};
+
+APIUtil.onresponsed = (responsed)=> console.log(responsed);
+
+window.onpagehide =
+window.onbeforeunload = 
+window.onunload = ()=> {
+  storage.set("STATE", state);
+  console.log("state saved");
+}
+</script>
