@@ -1,7 +1,7 @@
 const APIUtilV2 = {
   url: (mastodon_url)=> ({
     ...connection(mastodon_url),
-    ...communicate(mastodon_url),
+    ...read(mastodon_url),
   }),
 
   handleRequest: async (request)=> {
@@ -78,7 +78,7 @@ const connection = (mastodon_url)=> ({
   },
 });
 
-const communicate = (mastodon_url)=> ({
+const read = (mastodon_url)=> ({
   account: ()=> ({
     self: async ({access_token})=> {
       const api_url = new URL(mastodon_url + "/api/v1/accounts/verify_credentials");
