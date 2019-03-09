@@ -80,6 +80,15 @@ const connection = (mastodon_url)=> ({
 
 const read = (mastodon_url)=> ({
   account: ()=> ({
+    id: async (id)=> {
+      const api_url = new URL(mastodon_url + "/api/v1/accounts/" + id);
+      const request = new Request(api_url, {
+        method: "GET",
+        mode: "cors",
+      });
+
+      return await APIUtilV2.handleRequest(request);
+    },
     self: async ({access_token})=> {
       const api_url = new URL(mastodon_url + "/api/v1/accounts/verify_credentials");
       const request = new Request(api_url, {
