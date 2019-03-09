@@ -1,4 +1,4 @@
-const APIUtilV2 = {
+const APIUtil = {
   url: (mastodon_url)=> ({
     ...connection(mastodon_url),
     ...read(mastodon_url),
@@ -7,7 +7,7 @@ const APIUtilV2 = {
   handleRequest: async (request)=> {
     let response = await fetch(request);
     let json = await response.json();
-    APIUtilV2.onresponsed(json);
+    APIUtil.onresponsed(json);
     return json;
   },
 
@@ -30,7 +30,7 @@ const connection = (mastodon_url)=> ({
       }),
     });
 
-    return await APIUtilV2.handleRequest(request);
+    return await APIUtil.handleRequest(request);
   },
 
   token: async ({client_id, client_secret, code, redirect_uri})=> {
@@ -48,7 +48,7 @@ const connection = (mastodon_url)=> ({
       }),
     });
 
-    return await APIUtilV2.handleRequest(request);
+    return await APIUtil.handleRequest(request);
   },
 
   revoke: async ({client_id, client_secret})=> {
@@ -63,7 +63,7 @@ const connection = (mastodon_url)=> ({
       }),
     });
 
-    return await APIUtilV2.handleRequest(request);
+    return await APIUtil.handleRequest(request);
   },
 
   authLink: ({client_id, redirect_uri})=> {
@@ -87,7 +87,7 @@ const read = (mastodon_url)=> ({
         mode: "cors",
       });
 
-      return await APIUtilV2.handleRequest(request);
+      return await APIUtil.handleRequest(request);
     },
     self: async ({access_token})=> {
       const api_url = new URL(mastodon_url + "/api/v1/accounts/verify_credentials");
@@ -97,7 +97,7 @@ const read = (mastodon_url)=> ({
         headers: {Authorization: `Bearer ${access_token}`},
       });
 
-      return await APIUtilV2.handleRequest(request);
+      return await APIUtil.handleRequest(request);
     },
   }),
   
@@ -117,7 +117,7 @@ const read = (mastodon_url)=> ({
           headers: {Authorization: `Bearer ${access_token}`},
         });
     
-        return await APIUtilV2.handleRequest(request);
+        return await APIUtil.handleRequest(request);
       },
 
       federated: async ({only_media=false}={})=> {
@@ -127,7 +127,7 @@ const read = (mastodon_url)=> ({
         api_url.search = searchParams;
         const request = new Request(api_url, {method: "GET", mode: "cors"});
 
-        return await APIUtilV2.handleRequest(request);
+        return await APIUtil.handleRequest(request);
       },
 
       local: async ({only_media=false}={})=> {
@@ -137,10 +137,10 @@ const read = (mastodon_url)=> ({
         api_url.search = searchParams;
         const request = new Request(api_url, {method: "GET", mode: "cors"});
 
-        return await APIUtilV2.handleRequest(request);
+        return await APIUtil.handleRequest(request);
       },
     };
   },
 })
 
-export default APIUtilV2;
+export default APIUtil;
