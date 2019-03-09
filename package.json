@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "hyperapp": "^1.2.9",
-    "dev-kit": "git+https://github.com/kat-atat/dev-kit.git"
+    "dev-kit": "git+https://github.com/kat-atat/dev-kit.git",
+    "hyperapp": "^1.2.9"
   }
 }
