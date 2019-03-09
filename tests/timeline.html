@@ -23,13 +23,12 @@ const state = {
 }
 
 const action = {
-  fetch: ({mastodon_url})=> (state, action)=>
-    APIUtil.url(mastodon_url)
-    .timeline()
-    .local()
-    .then((timeline)=> action.pull(timeline)),
+  fetch: ({mastodon_url})=> async (state, action)=> {
+    let timeline = await APIUtil.url(mastodon_url).timeline().local();
+    action.pull(timeline);
+  },
 
-  pull: (timeline)=> (state)=> ({timeline}),
+  pull: (timeline)=> ()=> ({timeline}),
 };
 
 const view = (state, action)=>
