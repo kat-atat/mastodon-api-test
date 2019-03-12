@@ -29,12 +29,12 @@ const appDetail = {
   client_name: "test",
   scopes: "read write follow",
   website: "",
+  redirect_uris: "http://localhost:5000/tests/apiutil.html",
 }
-
-const redirect_uri = "http://localhost:5000/tests/apiutil.html";
 
 
 let mastodon_url = "https://mental.social";
+let redirect_uri = "http://localhost:5000/tests/apiutil.html";
 let acct = "carrot";
 let code = new URL(document.location).searchParams.get("code");
 let useToken = true;
@@ -59,7 +59,7 @@ window.run1 = async ()=> {
     let client = state.clients.filter((client)=> mastodon_url === client.mastodon_url)[0];
     if (client === undefined) {
       console.log("request apps");
-      let createdApp = await APIUtil.url(mastodon_url).app({...appDetail, redirect_uris: redirect_uri});
+      let createdApp = await APIUtil.url(mastodon_url).app(appDetail);
       client = {...createdApp, mastodon_url};
       // TODO: client = {mastodon_url, client_id, client_secret, redirect_uri};
       state.clients.push(client);
@@ -71,7 +71,7 @@ window.run1 = async ()=> {
     .filter((account)=> acct === account.acct)[0];
     if (account === undefined) {
       console.log("create auth link");
-      state.pending = {...client, mastodon_url, redirect_uri};
+      state.pending = {...client, mastodon_url, redirect_uri, scope: "read write follow"};
       // state.pending = {mastodon_url, client_id, client_secret, redirect_uri};
       let authLink = APIUtil.url(mastodon_url).authLink(state.pending);
       return window.location.href = authLink;

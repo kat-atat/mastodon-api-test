@@ -66,12 +66,13 @@ const connection = (mastodon_url)=> ({
     return await APIUtil.handleRequest(request);
   },
 
-  authLink: ({client_id, redirect_uri})=> {
+  authLink: ({client_id, redirect_uri, scope="read"})=> {
     const url = new URL(mastodon_url + "/oauth/authorize");
 
     const s = url.searchParams;
     s.set("client_id", client_id);
     s.set("redirect_uri", redirect_uri);
+    s.set("scope", scope);
     s.set("response_type", "code");
 
     return url;
