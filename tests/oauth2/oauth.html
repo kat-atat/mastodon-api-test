@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+</head>
+<body>
+  <script src="../../node_modules/dev-kit/dist/dev-kit.js"></script>
+  <dev-kit></dev-kit>
+</body>
+</html>
+
+<script type="module">
+import APIUtil from "../../src/APIUtil.js";
+import storage from "../../src/storage.js";
+
+const search = new URL(document.location).searchParams;
+const code = search.get("code");
+const mastodon_url = search.get("mastodon_url");
+const redirect_uri = "http://localhost:5000/tests/oauth2/oauth.html" + "?mastodon_url=" + mastodon_url;
+const client_id = storage.get("client_id");
+const client_secret = storage.get("client_secret");
+
+(async ()=> {
+
+  if (code) {
+    let {access_token} = await APIUtil.url(mastodon_url)
+    .token({
+      client_id,
+      client_secret,
+      code,
+      redirect_uri,
+    });
+    location.href = "./main.html" + `?mastodon_url=${mastodon_url}` + `&access_token=${access_token}`;
+  }
+
+  else if (client_id) {
+    location.href = APIUtil.url(mastodon_url)
+    .authLink({
+      scope: "read",
+      redirect_uri,
+      client_id,
+    });
+  }
+
+  else if (mastodon_url) {
+    location.href = "./regist-app.html" + `?mastodon_url=${mastodon_url}`;
+  }
+
+})();
+</script>

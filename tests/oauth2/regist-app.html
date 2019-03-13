@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+</head>
+<body>
+  <script src="../../node_modules/dev-kit/dist/dev-kit.js"></script>
+  <dev-kit></dev-kit>
+</body>
+</html>
+
+
+<script type="module">
+import APIUtil from "../../src/APIUtil.js";
+import storage from "../../src/storage.js";
+
+const search = new URL(document.location).searchParams;
+const mastodon_url = search.get("mastodon_url");
+
+(async ()=> {
+
+  if (mastodon_url) {
+    let {client_id, client_secret} = await APIUtil.url(mastodon_url)
+    .app({
+      client_name: "test",
+      scopes: "read write follow",
+      redirect_uris: "http://localhost:5000/tests/oauth2/oauth.html" + "?mastodon_url=" + mastodon_url,
+      website: "",
+    });
+
+    storage.set("client_id", client_id);
+    storage.set("client_secret", client_secret);
+
+    location.href = "./oauth.html" + "?mastodon_url=" + mastodon_url;
+  }
+
+})();
+</script>

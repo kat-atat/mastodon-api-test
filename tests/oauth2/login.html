@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>mastodon-api-test</title>
+    <script src="../../node_modules/dev-kit/dist/dev-kit.js"></script>
+  </head>
+  <body>
+    <dev-kit></dev-kit>
+    <div class="main"></div>
+  </body>
+</html>
+
+
+<script type="module">
+import {h, app} from "../../src/hyperapp.js";
+import APIUtil from "../../src/APIUtil.js";
+
+
+let submit = ({mastodon_url, no_token})=> {
+  if (!mastodon_url) {
+    return null;
+  }
+  if (no_token) {
+    location.href = "./main.html" + `?mastodon_url=${mastodon_url}`;
+  }
+  else {
+    location.href = "./oauth.html" + `?mastodon_url=${mastodon_url}`;
+  }
+}
+
+const state = {
+  mastodon_url: "",
+  no_token: false,
+}
+
+const action = {
+  onkeydown: (ev)=>
+    ev.keyCode === 13
+    ? action.onsubmit()
+    : null,
+
+  onsubmit: ()=> (state)=> submit(state),
+
+  oninput: (ev)=> ()=> ({mastodon_url: ev.target.value}),
+  oncheck: (ev)=> ()=> ({no_token: ev.target.checked}),
+}
+
+const view = (state, action)=> 
+  h("div", {}, [
+    h("label", {}, [
+      "擬似アカウントモードで利用する",
+      h("input", {
+        type: "checkbox",
+        onclick: (ev)=> action.oncheck(ev),
+      }),
+    ]),
+    h("label", {},
+      h("input", {
+        type: "text",
+        placeholder: "example.com",
+        oninput: (ev)=> action.oninput(ev),
+        onkeydown: (ev)=> action.onkeydown(ev),
+      }),
+    ),
+    h("label", {}, [
+      h("input", {
+        type: "button",
+        value: "ログイン",
+        onclick: ()=> action.onsubmit(),
+      }),
+    ]),
+  ])
+
+let ha = app(state, action, view, document.querySelector(".main"));
+</script>
