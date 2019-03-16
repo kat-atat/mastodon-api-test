@@ -17,9 +17,6 @@
 import {h, app} from "../../src/hyperapp.js";
 import APIUtil from "../../src/APIUtil.js";
 
-const main_url = new URL("./main.html", location);
-const oauth_url = new URL("./oauth.html", location);
-
 const state = {
   mastodon_url: "",
   no_token: false,
@@ -37,8 +34,8 @@ const action = {
   submit: ({mastodon_url, no_token})=> (state)=>
     mastodon_url
     ? no_token
-      ? location.href = main_url + `?mastodon_url=${mastodon_url}`
-      : location.href = oauth_url + `?mastodon_url=${mastodon_url}`
+      ? location.href = new URL("./main.html", location) + `?mastodon_url=${mastodon_url}`
+      : location.href = new URL("./oauth.html", location) + `?mastodon_url=${mastodon_url}`
     : null,
 }
 

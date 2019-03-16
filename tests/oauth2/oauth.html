@@ -22,7 +22,7 @@ const mastodon_url = search.get("mastodon_url");
   if (mastodon_url) {
     const servers = storage.get("servers") || [];
     const server = servers.find((server)=> server.mastodon_url === mastodon_url);
-    const registApp_url = new URL("./regist-app.html", location) + `?mastodon_url=${mastodon_url}`;
+    let next_url = "";
 
     if (code && server) {
       let {access_token} = await APIUtil.url(server.mastodon_url)
@@ -32,24 +32,26 @@ const mastodon_url = search.get("mastodon_url");
         code,
         redirect_uri: server.redirect_uri,
       });
-      const main_url = new URL("./main.html", location)
-        + `?mastodon_url=${server.mastodon_url}` + `&access_token=${access_token}`;
-      location.replace(main_url);
+      next_url = new URL("./main.html", location)
+      + `?mastodon_url=${server.mastodon_url}`
+      + `&access_token=${access_token}`;
     }
 
     else if (server) {
-      const authLink = APIUtil.url(server.mastodon_url)
+      next_url = APIUtil.url(server.mastodon_url)
       .authLink({
         scope: "read",
         redirect_uri: server.redirect_uri,
         client_id: server.client_id,
       });
-      location.replace(authLink);
     }
 
     else {
-      location.replace(registApp_url);
+      next_url = new URL("./regist-app.html", location)
+      + `?mastodon_url=${mastodon_url}`;
     }
+
+    location.replace(next_url);
   }
 
 })();
