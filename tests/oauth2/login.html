@@ -17,18 +17,8 @@
 import {h, app} from "../../src/hyperapp.js";
 import APIUtil from "../../src/APIUtil.js";
 
-
-let submit = ({mastodon_url, no_token})=> {
-  if (!mastodon_url) {
-    return null;
-  }
-  if (no_token) {
-    location.href = "./main.html" + `?mastodon_url=${mastodon_url}`;
-  }
-  else {
-    location.href = "./oauth.html" + `?mastodon_url=${mastodon_url}`;
-  }
-}
+const main_url = new URL("./main.html", location);
+const oauth_url = new URL("./oauth.html", location);
 
 const state = {
   mastodon_url: "",
@@ -36,39 +26,44 @@ const state = {
 }
 
 const action = {
-  onkeydown: (ev)=>
+  onkeydown: (ev)=> (state, action)=>
     ev.keyCode === 13
-    ? action.onsubmit()
+    ? action.submit(state)
     : null,
-
-  onsubmit: ()=> (state)=> submit(state),
 
   oninput: (ev)=> ()=> ({mastodon_url: ev.target.value}),
   oncheck: (ev)=> ()=> ({no_token: ev.target.checked}),
+
+  submit: ({mastodon_url, no_token})=> (state)=>
+    mastodon_url
+    ? no_token
+      ? location.href = main_url + `?mastodon_url=${mastodon_url}`
+      : location.href = oauth_url + `?mastodon_url=${mastodon_url}`
+    : null,
 }
 
 const view = (state, action)=> 
   h("div", {}, [
     h("label", {}, [
-      "擬似アカウントモードで利用する",
+      "擬似アカウントモード",
       h("input", {
         type: "checkbox",
         onclick: (ev)=> action.oncheck(ev),
       }),
     ]),
-    h("label", {},
+    h("label", {}, [
       h("input", {
         type: "text",
-        placeholder: "example.com",
+        placeholder: "https://example.com",
         oninput: (ev)=> action.oninput(ev),
         onkeydown: (ev)=> action.onkeydown(ev),
       }),
-    ),
+    ]),
     h("label", {}, [
       h("input", {
         type: "button",
         value: "ログイン",
-        onclick: ()=> action.onsubmit(),
+        onclick: ()=> action.submit(state),
       }),
     ]),
   ])

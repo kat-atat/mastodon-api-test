@@ -17,6 +17,7 @@
 const search = new URL(document.location).searchParams;
 const mastodon_url = search.get("mastodon_url");
 const access_token = search.get("access_token");
+const login_url = new URL("./login.html", location);
 
 if (mastodon_url && access_token) {
   // start app
@@ -25,7 +26,7 @@ else if (mastodon_url) {
   // no-token mode
 }
 else {
-  location.href = "./login.html";
+  location.replace(login_url);
 }
 
 console.log("mastodon_url: " + mastodon_url);

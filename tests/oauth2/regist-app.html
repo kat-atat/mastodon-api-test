@@ -20,18 +20,31 @@ const mastodon_url = search.get("mastodon_url");
 (async ()=> {
 
   if (mastodon_url) {
-    let {client_id, client_secret} = await APIUtil.url(mastodon_url)
-    .app({
-      client_name: "test",
-      scopes: "read write follow",
-      redirect_uris: "http://localhost:5000/tests/oauth2/oauth.html" + "?mastodon_url=" + mastodon_url,
-      website: "",
-    });
+    const servers = storage.get("servers") || [];
+    const server = servers.find((server)=> server.mastodon_url === mastodon_url);
+    const oauth_url = new URL("./oauth.html", location) + `?mastodon_url=${mastodon_url}`;
+    const redirect_uri = oauth_url;
 
-    storage.set("client_id", client_id);
-    storage.set("client_secret", client_secret);
+    if (!server) {
+      let {client_id, client_secret} = await APIUtil.url(mastodon_url)
+      .app({
+        client_name: "test",
+        scopes: "read write follow",
+        redirect_uris: redirect_uri,
+        website: "",
+      });
 
-    location.href = "./oauth.html" + "?mastodon_url=" + mastodon_url;
+      const server = {
+        mastodon_url,
+        client_id,
+        client_secret,
+        redirect_uri,
+      }
+
+      storage.set("servers", [...servers, server]);
+    }
+
+    location.replace(oauth_url);
   }
 
 })();

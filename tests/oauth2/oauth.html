@@ -16,34 +16,40 @@ import storage from "../../src/storage.js";
 const search = new URL(document.location).searchParams;
 const code = search.get("code");
 const mastodon_url = search.get("mastodon_url");
-const redirect_uri = "http://localhost:5000/tests/oauth2/oauth.html" + "?mastodon_url=" + mastodon_url;
-const client_id = storage.get("client_id");
-const client_secret = storage.get("client_secret");
 
 (async ()=> {
 
-  if (code) {
-    let {access_token} = await APIUtil.url(mastodon_url)
-    .token({
-      client_id,
-      client_secret,
-      code,
-      redirect_uri,
-    });
-    location.href = "./main.html" + `?mastodon_url=${mastodon_url}` + `&access_token=${access_token}`;
-  }
+  if (mastodon_url) {
+    const servers = storage.get("servers") || [];
+    const server = servers.find((server)=> server.mastodon_url === mastodon_url);
+    const registApp_url = new URL("./regist-app.html", location) + `?mastodon_url=${mastodon_url}`;
 
-  else if (client_id) {
-    location.href = APIUtil.url(mastodon_url)
-    .authLink({
-      scope: "read",
-      redirect_uri,
-      client_id,
-    });
-  }
+    if (code && server) {
+      let {access_token} = await APIUtil.url(server.mastodon_url)
+      .token({
+        client_id: server.client_id,
+        client_secret: server.client_secret,
+        code,
+        redirect_uri: server.redirect_uri,
+      });
+      const main_url = new URL("./main.html", location)
+        + `?mastodon_url=${server.mastodon_url}` + `&access_token=${access_token}`;
+      location.replace(main_url);
+    }
 
-  else if (mastodon_url) {
-    location.href = "./regist-app.html" + `?mastodon_url=${mastodon_url}`;
+    else if (server) {
+      const authLink = APIUtil.url(server.mastodon_url)
+      .authLink({
+        scope: "read",
+        redirect_uri: server.redirect_uri,
+        client_id: server.client_id,
+      });
+      location.replace(authLink);
+    }
+
+    else {
+      location.replace(registApp_url);
+    }
   }
 
 })();
