@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>mastodon-api-test</title>
+    <script src="../node_modules/dev-kit/dist/dev-kit.js"></script>
+  </head>
+  <body>
+    <dev-kit></dev-kit>
+    <div class="main"></div>
+  </body>
+</html>
+
+
+<script type="module">
+import APIUtil from "../src/APIUtil.js";
+import {h, app} from "../src/hyperapp.js";
+import account from "../src/view/account.js";
+
+const state = {
+  account: {
+    id: "",
+    username: "",
+    acct: "",
+    display_name: "",
+    locked: false,
+    created_at: "",
+    followers_count: 0,
+    following_count: 0,
+    statuses_count: 0,
+    note: "",
+    url: "",
+    avatar: "",
+    avatar_static: "",
+    header: "",
+    header_static: "",
+    emojis: [],
+    moved: {},
+    fields: [],
+    bot: false,
+  }
+}
+
+const action = {
+  pull: (account)=> ({account}),
+};
+
+const view = (state, action)=>
+  h("div", {}, [
+    account(state.account),
+  ])
+
+let ha = app(state, action, view, document.querySelector(".main"));
+
+fetch("./samples/account.json")
+.then((res)=> res.json())
+.then((json)=> ha.pull(json));
+</script>
