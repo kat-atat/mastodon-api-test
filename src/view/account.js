@@ -15,6 +15,12 @@ const account = (account)=>
     h("span", {class: "account__statuses-count"}, account.statuses_count),
     h("span", {class: "account__following-count"}, account.following_count),
     h("span", {class: "account__followers-count"}, account.followers_count),
+
+    h("span", {class: "account__id", "data-id": account.id}),
+    h("span", {class: "account__username", "data-username": account.username}),
+    h("span", {class: "account__avatar-static", "data-avatar-static": account.avatar_static}),
+    h("span", {class: "account__header-static", "data-header-static": account.header_static}),
+    h("span", {class: "account__emojis", "data-emojis": account.emojis.join(" ")}),
   ])
 
 export default account;
