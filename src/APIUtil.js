@@ -7,11 +7,14 @@ const APIUtil = {
   handleRequest: async (request)=> {
     let response = await fetch(request);
     let json = await response.json();
-    APIUtil.onresponsed(json);
+    json.error
+    ? APIUtil.onerror(json)
+    : APIUtil.onresponsed(json);
     return json;
   },
 
   onresponsed: (responsed)=> {},
+  onerror: (responsed)=> {},
 }
 
 const connection = (mastodon_url)=> ({
