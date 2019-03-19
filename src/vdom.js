@@ -1,59 +1,58 @@
 import {h, app} from "./hyperapp.js";
+import APIUtil from "./APIUtil.js";
+import timeline from "./view/timeline.js";
+import account from "./view/account.js";
 
 const state = {
-  statusText: "",
-  instances: [],
-  selectedInstanceIndex: 0,
-  KEYCODE_ENTER: 13,
+  mastodon_url: "",
+  access_token: "",
+  info: "ready.",
+  timeline: [],
+  account: {},
 };
 
 const action = {
-  onkeydown: ({keyCode})=> (state)=> {
-    switch (keyCode) {
-      case state.KEYCODE_ENTER: return action.register(state);
-    }
+  fetch: ()=> (state, action)=> {
+    action.fetch_account();
+    action.fetch_timeline();
   },
-  onclick: ()=> (state)=> action.register(state),
-
-  register: (state)=> {
-    return {};
+  fetch_account: ()=> async ({mastodon_url, access_token}, action)=> {
+    let account = await APIUtil.url(mastodon_url).account().self({access_token});
+    action.set({account});
   },
-
+  fetch_timeline: ()=> async ({mastodon_url}, action)=> {
+    let timeline = await APIUtil.url(mastodon_url).timeline().local();
+    action.set({timeline});
+  },
+  clear: ()=> {
+    return {timeline: [], account: null, info: "responces cleared."};
+  },
   set: (newState)=> (state)=> ({state, ...newState}),
 };
 
-const statusText = (state, action)=>
-  h("div", {class: "statusText"}, [
-    h("p", {}, state.statusText),
-  ])
-
-const register = (state, action)=> 
-  h("div", {class: "register"}, [
-    h("label", {}, [
-      h("span", {}, "https://"),
-      h("input", {
-        type: "text",
-        placeholder: "mastodon.example.com",
-        onkeydown: (ev)=> action.onkeydown(ev),
-      }),
-    ]),
-    h("button", {onclick: ()=> action.onclick()}, "CONNECT"),
-  ])
-
-const selector = (state, action)=>
-  h("div", {class: "selector"}, [
-    h("select", {disabled: state.instances.length === 0}, [
-      ...state.instances.map(({url, username}, index)=>
-        h("option", {value: "", selected: index === state.selectedInstanceIndex}, `${username}@${url}`)
-      ),
-    ]),
-  ])
-
 const view = (state, action)=>
   h("div", {}, [
-    statusText,
-    register,
-    selector,
+    h("div", {class: "info"}, [
+      h("p", {}, state.info),
+    ]),
+    h("div", {class: "actions"}, [
+      h("button", {onclick: ()=> action.fetch()}, "fetch_all"),
+      h("button", {onclick: ()=> action.fetch_account()}, "fetch_account"),
+      h("button", {onclick: ()=> action.fetch_timeline()}, "fetch_timeline"),
+      h("button", {onclick: ()=> action.clear()}, "clear"),
+    ]),
+    h("div", {class: "responce"}, [
+      h("div", {class: "account"},
+        state.account
+          ? account(state.account)
+          : null,
+      ),
+      h("div", {class: "timeline"},
+        state.timeline
+          ? timeline(state.timeline)
+          : null,
+      ),
+    ]),
   ])
 
 export default (node)=> app(state, action, view, node);
