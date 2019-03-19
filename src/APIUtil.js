@@ -7,9 +7,13 @@ const APIUtil = {
   handleRequest: async (request)=> {
     let response = await fetch(request);
     let json = await response.json();
-    json.error
-    ? APIUtil.onerror(json)
-    : APIUtil.onresponsed(json);
+    if (json.error) {
+      APIUtil.onerror(json);
+      throw new Error("APIUtil ERR: " + json.error);
+    }
+    else {
+      APIUtil.onresponsed(json);
+    }
     return json;
   },
 
