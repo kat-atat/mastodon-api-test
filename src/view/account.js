@@ -1,4 +1,5 @@
 import {h, app} from "../hyperapp.js";
+import emoji from "./emoji.js";
 
 const account = (account)=>
   h("div", {class: "account"}, [
@@ -20,7 +21,11 @@ const account = (account)=>
     h("span", {class: "account__username", "data-username": account.username}),
     h("span", {class: "account__avatar-static", "data-avatar-static": account.avatar_static}),
     h("span", {class: "account__header-static", "data-header-static": account.header_static}),
-    h("span", {class: "account__emojis", "data-emojis": account.emojis.join(" ")}),
+    h("span", {class: "account__emojis"},
+      account.emojis.map((a_emoji)=>
+        emoji(a_emoji)
+      ),
+    ),
   ])
 
 export default account;
