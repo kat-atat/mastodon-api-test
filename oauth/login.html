@@ -4,29 +4,31 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>mastodon-api-test</title>
-    <script src="../node_modules/dev-kit/dist/dev-kit.js"></script>
   </head>
   <body>
-    <dev-kit></dev-kit>
     <div class="main"></div>
   </body>
 </html>
 
+<script>
+const search = new URL(document.location).searchParams;
+const mastodon_url = search.get("mastodon_url");
+const access_token = search.get("access_token");
+if (mastodon_url) {
+  const top_url = new URL(window.top.location);
+  top_url.searchParams.set("mastodon_url", mastodon_url);
+  if (access_token) {
+    top_url.searchParams.set("access_token", access_token);
+  }
+  window.top.location.replace(top_url);
+}
+</script>
+
+
 <script type="module">
 import {h, app} from "../src/hyperapp.js";
 
-const main_url = new URL("../index.html", location);
 const oauth_url = new URL("./oauth.html", location);
-
-const search = new URL(document.location).searchParams;
-const [mastodon_url, access_token] = [search.get("mastodon_url"), search.get("access_token")];
-if (mastodon_url, access_token) {
-  main_url.searchParams.set("mastodon_url", mastodon_url);
-  main_url.searchParams.set("access_token", access_token);
-  location.href = main_url;
-}
-
-
 const state = {
   url: "",
   no_token: false,
@@ -41,7 +43,7 @@ const action = {
   submit: ()=> (state)=> {
     state.url
     ? state.no_token
-      ? location.href = main_url + `?mastodon_url=${state.url}`
+      ? location.href = location.href + `?mastodon_url=${state.url}`
       : location.href = oauth_url + `?mastodon_url=${state.url}`
     : null;
   },
@@ -49,13 +51,18 @@ const action = {
 
 const view = (state, action)=>
   h("div", {class: "login"}, [
-    h("label", {class: "login__no-token"},
-      "アカウントを使わない",
-      h("input", {
-        type: "checkbox",
-        onclick: (ev)=> action.onNoTokenToggleClick(ev),
-      }),
-    ),
+    h("div", {class: "login__header"}, [
+      h("h1", {}, "ログイン"),
+    ]),
+    h("div", {class: "login__no-token"}, [
+      h("label", {}, [
+        "アカウントを使わない",
+        h("input", {
+          type: "checkbox",
+          onclick: (ev)=> action.onNoTokenToggleClick(ev),
+        }),
+      ]),
+    ]),
     h("label", {class: "login__url"},
       h("input", {
         type: "text",
@@ -65,10 +72,9 @@ const view = (state, action)=>
       }),
     ),
     h("label", {class: "login__submit"},
-      "ログイン",
       h("button", {
         onclick: ()=> action.onSubmitButtonClick(),
-      }),
+      }, "ログイン"),
     ),
   ])
 
