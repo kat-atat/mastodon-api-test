@@ -4,8 +4,6 @@
   <meta charset="utf-8"/>
 </head>
 <body>
-  <script src="../node_modules/dev-kit/dist/dev-kit.js"></script>
-  <dev-kit></dev-kit>
 </body>
 </html>
 
@@ -14,13 +12,10 @@ import APIUtil from "../src/APIUtil.js";
 import storage from "../src/storage.js";
 
 const login_url = new URL("./login.html", location);
-const registerApp_url = new URL("./register-app.html", location);
 const redirect_uri = new URL("./oauth.html", location);
 
 const search = new URL(document.location).searchParams;
 const mastodon_url = search.get("mastodon_url");
-const client_id = search.get("client_id");
-const client_secret = search.get("client_secret");
 const code = search.get("code");
 
 (async ()=> {
@@ -30,7 +25,14 @@ const code = search.get("code");
 
     const servers = storage.get("servers") || [];
     let server = servers.find((server)=> server.mastodon_url === mastodon_url);
-    if (!server && client_id && client_secret) {
+    if (!server) {
+      const {client_id, client_secret} = await APIUtil.url(mastodon_url)
+      .app({
+        client_name: "test",
+        scopes: "read write follow",
+        redirect_uris: redirect_uri,
+        website: "",
+      });
       server = {mastodon_url, client_id, client_secret};
       storage.set("servers", [server, ...servers]);
     }
@@ -56,12 +58,6 @@ const code = search.get("code");
         client_id: server.client_id,
       });
       location.replace(authLink);
-    }
-
-    else {
-      registerApp_url.searchParams.set("mastodon_url", mastodon_url);
-      registerApp_url.searchParams.set("redirect_uri", redirect_uri);
-      location.replace(registerApp_url);
     }
   }
 

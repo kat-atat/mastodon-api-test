@@ -11,16 +11,17 @@
 </html>
 
 <script>
+const main_url = new URL("../index.html", location);
+
 const search = new URL(document.location).searchParams;
 const mastodon_url = search.get("mastodon_url");
 const access_token = search.get("access_token");
 if (mastodon_url) {
-  const top_url = new URL(window.top.location);
-  top_url.searchParams.set("mastodon_url", mastodon_url);
+  main_url.searchParams.set("mastodon_url", mastodon_url);
   if (access_token) {
-    top_url.searchParams.set("access_token", access_token);
+    main_url.searchParams.set("access_token", access_token);
   }
-  window.top.location.replace(top_url);
+  location.href = main_url;
 }
 </script>
 
@@ -43,7 +44,7 @@ const action = {
   submit: ()=> (state)=> {
     state.url
     ? state.no_token
-      ? location.href = location.href + `?mastodon_url=${state.url}`
+      ? location.replace(location.href + `?mastodon_url=${state.url}`)
       : location.href = oauth_url + `?mastodon_url=${state.url}`
     : null;
   },
