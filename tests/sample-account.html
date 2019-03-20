@@ -17,29 +17,10 @@
 import APIUtil from "../src/APIUtil.js";
 import {h, app} from "../src/hyperapp.js";
 import account from "../src/view/account.js";
+import css from "../src/css/index.js";
 
 const state = {
-  account: {
-    id: "",
-    username: "",
-    acct: "",
-    display_name: "",
-    locked: false,
-    created_at: "",
-    followers_count: 0,
-    following_count: 0,
-    statuses_count: 0,
-    note: "",
-    url: "",
-    avatar: "",
-    avatar_static: "",
-    header: "",
-    header_static: "",
-    emojis: [],
-    moved: {},
-    fields: [],
-    bot: false,
-  }
+  account: null,
 }
 
 const action = {
@@ -48,7 +29,8 @@ const action = {
 
 const view = (state, action)=>
   h("div", {}, [
-    account(state.account),
+    h("style", {textContent: css}),
+    state.account ? account(state.account) : null,
   ])
 
 let ha = app(state, action, view, document.querySelector(".main"));

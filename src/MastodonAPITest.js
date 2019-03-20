@@ -1,5 +1,5 @@
 import vdom from "./vdom.js";
-import css from "./css.js";
+import css from "./css/index.js";
 
 export default class MastodonAPITest extends HTMLElement {
   constructor() {

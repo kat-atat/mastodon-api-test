@@ -17,39 +17,11 @@
 import APIUtil from "../src/APIUtil.js";
 import {h, app} from "../src/hyperapp.js";
 import status from "../src/view/status.js";
+import css from "../src/css/index.js";
 
 const state = {
-  status: {
-    id: "",
-    uri: "",
-    url: "",
-    account: {},
-    in_reply_to_id: "",
-    in_reply_to_account_id: "",
-    reblog: {},
-    content: "",
-    created_at: "",
-    emojis: "",
-    replies_count: 0,
-    reblogs_count: 0,
-    favourites_count: 0,
-    reblogged: false,
-    favourited: false,
-    muted: false,
-    sensitive: false,
-    spoiler_text: "",
-    visibility: "",
-    media_attachments: [],
-    mentions: [],
-    tags: [],
-    card: {},
-    poll: {},
-    application: {},
-    language: "",
-    pinned: false,
-  }
+  status: null,
 }
-
 
 const action = {
   pull: (status)=> ({status}),
@@ -57,7 +29,8 @@ const action = {
 
 const view = (state, action)=>
   h("div", {}, [
-    status(state.status),
+    h("style", {textContent: css}),
+    state.status ? status(state.status) : null,
   ])
 
 let ha = app(state, action, view, document.querySelector(".main"));

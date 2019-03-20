@@ -17,6 +17,7 @@
 import APIUtil from "../src/APIUtil.js";
 import {h, app} from "../src/hyperapp.js";
 import timeline from "../src/view/timeline.js";
+import css from "../src/css/index.js";
 
 const state = {
   timeline: [],
@@ -28,6 +29,7 @@ const action = {
 
 const view = (state, action)=>
   h("div", {}, [
+    h("style", {textContent: css}),
     timeline(state.timeline),
   ])
 
