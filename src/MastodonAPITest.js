@@ -1,4 +1,5 @@
 import vdom from "./vdom.js";
+import css from "./css.js";
 
 export default class MastodonAPITest extends HTMLElement {
   constructor() {
@@ -24,5 +25,6 @@ export default class MastodonAPITest extends HTMLElement {
 }
 
 const TEMPLATE = `
+<style>${css}</style>
 <div class="main"></div>
 `;
