@@ -4,8 +4,13 @@ export default `
   image-rendering: pixerated;
 }
 
-.timeline {
+.client {
   background-color: rgb(199, 101, 63);
+  color: rgb(223, 218, 217);
+}
+
+.timeline {
+  background: rgb(75, 75, 75);
   color: rgb(223, 218, 217);
 }
 
@@ -15,6 +20,7 @@ export default `
   border-style: outset;
   border-color: rgba(75, 75, 75, 0.50);
 }
+
 .account__acct {
   font-family: var(--account__acct-font, monospace);
 }
