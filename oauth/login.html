@@ -44,7 +44,7 @@ const action = {
   submit: ()=> (state)=> {
     state.url
     ? state.no_token
-      ? location.replace(location.href + `?mastodon_url=${state.url}`)
+      ? location.href = location.href + `?mastodon_url=${state.url}`
       : location.href = oauth_url + `?mastodon_url=${state.url}`
     : null;
   },
