@@ -5,7 +5,7 @@ const status = (status)=>
   h("div", {class: "status"}, [
     h("div", {class: "status__account account"}, [
       h("span", {class: "account__avatar"}, h("img", {src: status.account.avatar})),
-      h("span", {class: "account__display_name"}, status.account.display_name),
+      h("span", {class: "account__display-name"}, status.account.display_name),
       h("span", {class: "account__acct"}, status.account.acct),
     ]),
     h("div", {class: "status__content", innerHTML: status.content}),

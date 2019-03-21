@@ -62,12 +62,12 @@ const view = (state, action)=>
       h("button", {onclick: ()=> action.clear()}, "clear"),
     ]),
     h("div", {class: "responce"}, [
-      h("div", {class: "account"},
+      h("div", {class: "responce__account"},
         state.account
           ? account(state.account)
           : null,
       ),
-      h("div", {class: "timeline"},
+      h("div", {class: "responce__timeline"},
         state.timeline
           ? timeline(state.timeline)
           : null,
