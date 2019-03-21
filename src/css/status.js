@@ -2,33 +2,42 @@ export default `
 .status {
   display: grid;
   grid-template:
-  "a b b"
-  "c c c";
+  "a a a b c . d ." auto
+  "a a a e e e e ." auto
+  "a a a f f f f ." auto
+  ". . . g h i . ." auto / 5% 5% 5% 1fr 1fr 1fr 1fr 8%;
   padding: 1em;
   border-width: 4px;
 }
 
-.status>.status__account {
-  grid-area: 1 / 1 / 3 / 4;
+.status>.status__content{ grid-area: e; }
+.status>.status__media-attachments { grid-area: f; }
+.status>.status__replies-count { grid-area: g; }
+.status>.status__reblogs-count { grid-area: h; }
+.status>.status__favourites-count { grid-area: i; }
+.status>.status__created-at { grid-area: d; }
+.status>.status__account { grid-area: 1 / 1 / 5 / 9; }
+
+.status--sensitive::before {
+  grid-area: 2 / 4 / 4 / 8;
+  z-index: 10;
 }
 
-.status>.status__content {
-  grid-area: b;
+.status--sensitive:hover::before {
+  display: none;
 }
 
-.status>.status__replies-count {
-  grid-area: c;
+.status .account {
+  display: grid;
+  grid-template: inherit;
 }
 
-.status>.status__reblogs-count {
-  grid-area: c;
-}
+.status .account>.account__avatar { grid-area: a; }
+.status .account>.account__display-name { grid-area: b; }
+.status .account>.account__acct { grid-area: c; }
 
-.status>.status__favourites-count {
-  grid-area: c;
-}
-
-.status>.status__created-at {
-  grid-area: c;
+.status .account>.account__display-name,
+.status .account>.account__acct {
+  white-space: nowrap;
 }
 `;

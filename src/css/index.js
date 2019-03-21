@@ -4,10 +4,9 @@ import account from "./account.js";
 import status from "./status.js";
 import skin from "./skin.js";
 
-export default `
-${base}
-${timeline}
-${account}
-${status}
-${skin}
-`;
+export default ""
++ base
++ timeline
++ account
++ status
++ skin;
