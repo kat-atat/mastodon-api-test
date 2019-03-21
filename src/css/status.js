@@ -5,26 +5,30 @@ export default `
   "a a a b c . d ." auto
   "a a a e e e e ." auto
   "a a a f f f f ." auto
-  ". . . g h i . ." auto / 5% 5% 5% 1fr 1fr 1fr 1fr 8%;
+  "a a a g g g g ." auto
+  ". . . h i j . ." auto / 5% 5% 5% 1fr 1fr 1fr 1fr 8%;
   padding: 1em;
   border-width: 4px;
 }
 
-.status>.status__content{ grid-area: e; }
-.status>.status__media-attachments { grid-area: f; }
-.status>.status__replies-count { grid-area: g; }
-.status>.status__reblogs-count { grid-area: h; }
-.status>.status__favourites-count { grid-area: i; }
+.status>.status__content { grid-area: f; }
+.status>.status__media-attachments { grid-area: g; }
+.status>.status__replies-count { grid-area: h; }
+.status>.status__reblogs-count { grid-area: i; }
+.status>.status__favourites-count { grid-area: j; }
 .status>.status__created-at { grid-area: d; }
 .status>.status__account { grid-area: 1 / 1 / 5 / 9; }
 
-.status--sensitive::before {
-  grid-area: 2 / 4 / 4 / 8;
+.status--sensitive>.status__spoiler-text {
+  grid-area: 2 / 4 / 5 / 8;
   z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.status--sensitive:hover::before {
-  display: none;
+.status--sensitive-accepted.status--sensitive>.status__spoiler-text {
+  grid-area: e;
 }
 
 .status .account {

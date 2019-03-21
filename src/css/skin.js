@@ -35,13 +35,13 @@ export default `
   content: var(--favourites-count-symbol, "⭐️");
 }
 
-.status--sensitive::before {
-  content: var(--sensitive-text, "閲覧注意 ") attr(data-spoiler-text);
-}
-
-.status--sensitive::before {
+.status--sensitive>.status__spoiler-text {
   background: rgb(50, 50, 50);
   color: rgb(223, 218, 217);
+}
+
+.status--sensitive>.status__spoiler-text:empty::before {
+  content: var(--sensitive-text, "閲覧注意");
 }
 
 .account {

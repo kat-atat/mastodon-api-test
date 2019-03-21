@@ -44,6 +44,11 @@ const action = {
     return {timeline: [], account: null, info: "responces cleared."};
   },
   set: (newState)=> (state)=> ({state, ...newState}),
+
+  onStatus_spoilerText_click: (status)=> ()=> {
+    status.sensitiveAccepted = !status.sensitiveAccepted;
+    return {};
+  }
 };
 
 const view = (state, action)=>
@@ -69,7 +74,7 @@ const view = (state, action)=>
       ),
       h("div", {class: "responce__timeline"},
         state.timeline
-          ? timeline(state.timeline)
+          ? timeline(state.timeline, action)
           : null,
       ),
     ]),
