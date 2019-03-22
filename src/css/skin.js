@@ -10,8 +10,6 @@ export default `
 }
 
 .timeline {
-  background: rgb(75, 75, 75);
-  color: rgb(223, 218, 217);
 }
 
 .status {
