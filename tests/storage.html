@@ -36,18 +36,14 @@ console.log(restored.number.constructor === Number);
 console.log(restored.string.constructor === String);
 console.log(restored.NULL === null);
 console.log(restored.UNDEFINED === undefined);
-</script>
 
-<script type="module">
-import storage from "../src/storage.js";
-
-const test = {
+const test_2 = {
   value: "test",
 };
 
-storage.set("TEST", test);
-const restored = storage.get("TEST");
-console.log(restored.value === test.value);
+storage.set("TEST", test_2);
+const restored_2 = storage.get("TEST");
+console.log(restored_2.value === test_2.value);
 
 storage.remove("TEST");
 const removed = storage.get("TEST");
