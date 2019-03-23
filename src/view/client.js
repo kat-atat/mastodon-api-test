@@ -1,11 +1,11 @@
 import {h, app} from "../hyperapp.js";
-import timeline from "./timeline.js";
-import account from "./account.js";
+import timelineView from "./timeline.js";
+import accountView from "./account.js";
 
-const client = (state, action)=>
+const client = ({timeline, account, info}, action)=>
   h("div", {class: "client"}, [
     h("div", {class: "client__info"}, [
-      h("p", {}, state.info),
+      h("p", {}, info),
     ]),
 
     h("div", {class: "client__actions"}, [
@@ -20,14 +20,14 @@ const client = (state, action)=>
     ]),
 
     h("div", {class: "client__account"},
-      state.account
-        ? account(state.account)
+      account
+        ? accountView({account})
         : null,
     ),
 
     h("div", {class: "client__timeline"},
-      state.timeline
-        ? timeline(state.timeline, action)
+      timeline
+        ? timelineView({timeline})
         : null,
     ),
   ])

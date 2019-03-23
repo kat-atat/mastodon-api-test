@@ -14,23 +14,21 @@
 
 
 <script type="module">
-import APIUtil from "../src/APIUtil.js";
 import {h, app} from "../src/hyperapp.js";
-import account from "../src/view/account.js";
+import accountView from "../src/view/account.js";
 import css from "../src/css/index.js";
 import state from "../src/state.js";
 import action from "../src/action.js";
 
-
 const view = (state, action)=>
   h("div", {}, [
     h("style", {textContent: css}),
-    state.account ? account(state.account, action) : null,
+    state.account ? accountView : null,
   ])
 
 let ha = app(state, action, view, document.querySelector(".main"));
 
 fetch("./samples/account.json")
 .then((res)=> res.json())
-.then((json)=> ha.set({account: json}));
+.then((account)=> ha.set({account}));
 </script>

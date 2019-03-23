@@ -14,22 +14,24 @@
 
 
 <script type="module">
-import APIUtil from "../src/APIUtil.js";
 import {h, app} from "../src/hyperapp.js";
-import status from "../src/view/status.js";
+import statusView from "../src/view/status.js";
 import css from "../src/css/index.js";
-import state from "../src/state.js";
 import action from "../src/action.js";
+
+const state = {
+  status: null,
+}
 
 const view = (state, action)=>
   h("div", {}, [
     h("style", {textContent: css}),
-    state.status ? status(state.status, action) : null,
+    state.status ? statusView : null,
   ])
 
 let ha = app(state, action, view, document.querySelector(".main"));
 
 fetch("./samples/status.json")
 .then((res)=> res.json())
-.then((json)=> ha.set({status: json}));
+.then((status)=> ha.set({status}));
 </script>

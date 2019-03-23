@@ -1,6 +1,6 @@
 import {h, app} from "../hyperapp.js";
 
-const attachment = (attachment)=>
+const attachment = ({attachment})=>
   h("div", {
     class: "attachment",
     "data-id": attachment.id,

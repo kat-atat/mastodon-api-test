@@ -1,7 +1,7 @@
 import {h, app} from "../hyperapp.js";
-import attachment from "./attachment.js";
+import attachmentView from "./attachment.js";
 
-const status = (status, action)=>
+const status = ({status}, action)=>
   h("div", {
     class: "status"
     + (status.sensitive ? " status--sensitive" : "")
@@ -19,8 +19,8 @@ const status = (status, action)=>
     }, status.spoiler_text),
     h("div", {class: "status__content", innerHTML: status.content}),
     h("div", {class: "status__media-attachments"},
-      status.media_attachments.map((a_attachment)=>
-        attachment(a_attachment)
+      status.media_attachments.map((attachment)=>
+        attachmentView({attachment})
       ),
     ),
     h("span", {class: "status__replies-count"}, status.replies_count),

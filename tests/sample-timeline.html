@@ -14,22 +14,24 @@
 
 
 <script type="module">
-import APIUtil from "../src/APIUtil.js";
 import {h, app} from "../src/hyperapp.js";
-import timeline from "../src/view/timeline.js";
+import timelineView from "../src/view/timeline.js";
 import css from "../src/css/index.js";
-import state from "../src/state.js";
 import action from "../src/action.js";
+
+const state = {
+  timeline: [],
+}
 
 const view = (state, action)=>
   h("div", {}, [
     h("style", {textContent: css}),
-    timeline,
+    state.timeline ? timelineView : null,
   ])
 
 let ha = app(state, action, view, document.querySelector(".main"));
 
 fetch("./samples/timeline.json")
 .then((res)=> res.json())
-.then((json)=> ha.set({timeline: json}));
+.then((timeline)=> ha.set({timeline}));
 </script>

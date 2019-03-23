@@ -1,10 +1,10 @@
 import {h, app} from "../hyperapp.js";
-import status from "./status.js";
+import statusView from "./status.js";
 
-const timeline = (statuses, action)=>
+const timeline = ({timeline}, action)=>
   h("div", {class: "timeline"},
-    statuses.map((a_status)=>
-      h("div", {class: "timeline__status"}, status(a_status, action))
+    timeline.map((status)=>
+      h("div", {class: "timeline__status"}, statusView({status}, action))
     )
   )
 
