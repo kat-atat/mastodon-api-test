@@ -18,24 +18,18 @@ import APIUtil from "../src/APIUtil.js";
 import {h, app} from "../src/hyperapp.js";
 import timeline from "../src/view/timeline.js";
 import css from "../src/css/index.js";
-
-const state = {
-  timeline: [],
-}
-
-const action = {
-  pull: (timeline)=> ({timeline}),
-};
+import state from "../src/state.js";
+import action from "../src/action.js";
 
 const view = (state, action)=>
   h("div", {}, [
     h("style", {textContent: css}),
-    timeline(state.timeline),
+    timeline,
   ])
 
 let ha = app(state, action, view, document.querySelector(".main"));
 
 fetch("./samples/timeline.json")
 .then((res)=> res.json())
-.then((json)=> ha.pull(json));
+.then((json)=> ha.set({timeline: json}));
 </script>

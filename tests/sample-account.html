@@ -18,24 +18,19 @@ import APIUtil from "../src/APIUtil.js";
 import {h, app} from "../src/hyperapp.js";
 import account from "../src/view/account.js";
 import css from "../src/css/index.js";
+import state from "../src/state.js";
+import action from "../src/action.js";
 
-const state = {
-  account: null,
-}
-
-const action = {
-  pull: (account)=> ({account}),
-};
 
 const view = (state, action)=>
   h("div", {}, [
     h("style", {textContent: css}),
-    state.account ? account(state.account) : null,
+    state.account ? account(state.account, action) : null,
   ])
 
 let ha = app(state, action, view, document.querySelector(".main"));
 
 fetch("./samples/account.json")
 .then((res)=> res.json())
-.then((json)=> ha.pull(json));
+.then((json)=> ha.set({account: json}));
 </script>
