@@ -20,15 +20,18 @@ export default `
 .status>.status__account { grid-area: 1 / 1 / 5 / 9; }
 
 .status--sensitive>.status__spoiler-text {
-  grid-area: 2 / 4 / 5 / 8;
+  grid-area: 2 / 4 / -2 / -2;
   z-index: 10;
+}
+
+.status--show-sensitive>.status__spoiler-text {
+  grid-area: e;
+}
+
+.status__spoiler-text {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.status--sensitive-accepted.status--sensitive>.status__spoiler-text {
-  grid-area: e;
 }
 
 .status .account {
@@ -37,11 +40,7 @@ export default `
 }
 
 .status .account>.account__avatar { grid-area: a; }
+.status .account>.account__username { grid-area: b; }
 .status .account>.account__display-name { grid-area: b; }
 .status .account>.account__acct { grid-area: c; }
-
-.status .account>.account__display-name,
-.status .account>.account__acct {
-  white-space: nowrap;
-}
 `;
