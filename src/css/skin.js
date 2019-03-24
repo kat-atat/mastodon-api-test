@@ -16,7 +16,7 @@ export default `
   background: rgb(75, 75, 75);
   color: rgb(223, 218, 217);
   border-style: outset;
-  border-color: rgba(75, 75, 75, 0.50);
+  border-color: rgba(100, 100, 100, 0.25);
 }
 
 .status--sensitive>.status__spoiler-text {
@@ -28,7 +28,7 @@ export default `
   background: rgb(75, 75, 75);
   color: rgb(223, 218, 217);
   border-style: outset;
-  border-color: rgba(75, 75, 75, 0.50);
+  border-color: rgba(100, 100, 100, 0.25);
 }
 
 .status--show-sensitive>.status__show-sensitive-toggle {
@@ -42,7 +42,7 @@ export default `
 
 .account__avatar {
   border-style: inset;
-  border-color: rgba(75, 75, 75, 0.50);
+  border-color: rgba(100, 100, 100, 0.25);
 }
 
 
