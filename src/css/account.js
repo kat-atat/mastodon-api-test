@@ -5,6 +5,10 @@ export default `
   white-space: nowrap;
 }
 
+.account__avatar {
+  border-width: 1px;
+}
+
 .account>.account__display-name:not(:empty)~.account__username {
   display: none;
 }

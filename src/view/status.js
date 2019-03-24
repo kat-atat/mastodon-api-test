@@ -23,9 +23,9 @@ const status = ({status}, action)=>
         attachmentView({attachment}, action)
       ),
     ),
-    h("span", {class: "status__replies-count"}, status.replies_count),
-    h("span", {class: "status__reblogs-count"}, status.reblogs_count),
-    h("span", {class: "status__favourites-count"}, status.favourites_count),
+    h("span", {class: "status__replies-count", "data-replies-count": status.replies_count}),
+    h("span", {class: "status__reblogs-count", "data-reblogs-count": status.reblogs_count}),
+    h("span", {class: "status__favourites-count", "data-favourites-count": status.favourites_count}),
     h("div", {class: "status__created-at"}, status.created_at),
 
     h("div", {

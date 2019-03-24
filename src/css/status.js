@@ -2,10 +2,10 @@ export default `
 .status {
   display: grid;
   grid-template:
-  "a a a b c . . . d" auto
-  "a a a f f f f f ." auto
-  "a a a g g g g g ." auto
-  "a a a k h i j . ." auto / 5% 5% 5% 1fr 1fr 1fr 1fr 1fr 8%;
+  "a a a b c . . . . d" auto
+  "a a a f f f f f f ." auto
+  "a a a g g g g g g ." auto
+  "a a a k . h i j . ." auto / 5% 5% 5% 1fr 1fr 1fr 1fr 1fr 1fr 8%;
   align-items: start;
   gap: 0.5em;
   padding: 1em;
@@ -48,5 +48,10 @@ export default `
 
 .status__created-at {
   font-size: 8px;
+}
+
+.status__show-sensitive-toggle {
+  border-width: 4px;
+  text-align: center;
 }
 `;
