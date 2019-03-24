@@ -51,6 +51,9 @@ export default `
   border-width: 4px;
 }
 
+.status__created-at {
+  white-space: nowrap;
+}
 
 
 :not(.status--sensitive)>.status__show-sensitive-toggle,

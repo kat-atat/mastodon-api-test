@@ -5,7 +5,8 @@ export default `
 
 .client__timeline {
   max-height: 100vh;
-  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
 }
 
