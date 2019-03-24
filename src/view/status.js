@@ -15,18 +15,23 @@ const status = ({status}, action)=>
     ]),
     h("div", {
       class: "status__spoiler-text",
-      onclick: ()=> action.onStatus_spoilerText_click(status),
+      onclick: ()=> action.onStatusSpoilerTextClick(status),
     }, status.spoiler_text),
     h("div", {class: "status__content", innerHTML: status.content}),
     h("div", {class: "status__media-attachments"},
       status.media_attachments.map((attachment)=>
-        attachmentView({attachment})
+        attachmentView({attachment}, action)
       ),
     ),
     h("span", {class: "status__replies-count"}, status.replies_count),
     h("span", {class: "status__reblogs-count"}, status.reblogs_count),
     h("span", {class: "status__favourites-count"}, status.favourites_count),
     h("div", {class: "status__created-at"}, status.created_at),
+
+    h("div", {
+      class: "status__show-sensitive-toggle",
+      onclick: ()=> action.onStatusShowSensitiveToggleClick(status),
+    }),
   ])
 
 export default status;

@@ -2,34 +2,39 @@ import {h, app} from "../hyperapp.js";
 import timelineView from "./timeline.js";
 import accountView from "./account.js";
 
-const client = ({timeline, account, info}, action)=>
-  h("div", {class: "client"}, [
+const client = ({timeline, account, info, client}, action)=>
+  h("div", {
+    class: "client"
+    + (client.show === "timeline" ? " client--show-timeline" : "")
+    + (client.show === "account" ? " client--show-account" : ""),
+  }, [
     h("div", {class: "client__info"}, [
       h("p", {}, info),
     ]),
 
     h("div", {class: "client__actions"}, [
-      h("button", {onclick: ()=> action.fetch()}, "fetch_all"),
-      h("button", {onclick: ()=> action.fetch_account()}, "fetch_account"),
-      h("button", {onclick: ()=> action.fetch_ltl()}, "fetch_ltl"),
-      h("button", {onclick: ()=> action.fetch_ltl_media_only()}, "fetch_ltl_media_only"),
-      h("button", {onclick: ()=> action.fetch_htl()}, "fetch_htl"),
-      h("button", {onclick: ()=> action.fetch_federated()}, "fetch_federated"),
-      h("button", {onclick: ()=> action.fetch_federated_media_only()}, "fetch_federated_media_only"),
-      h("button", {onclick: ()=> action.clear()}, "clear"),
+      h("button", {onclick: ()=> action.onClientHomeTimelineButtonClick(client)}, "Home"),
+      h("button", {onclick: ()=> action.onClientLocalTimelineButtonClick(client)}, "Local"),
+      h("button", {onclick: ()=> action.onClientLocalMediaTimelineButtonClick(client)}, "Local(media)"),
+      h("button", {onclick: ()=> action.onClientFederatedTimelineButtonClick(client)}, "Federated"),
+      h("button", {onclick: ()=> action.onClientFederatedMediaTimelineButtonClick(client)}, "Federated(media)"),
+      h("button", {onclick: ()=> action.onClientScrollTopButtonClick(client)}, "scrollTop"),
+      h("button", {onclick: ()=> action.onClientAccountButtonClick(client)}, "Account"),
+      h("button", {onclick: ()=> action.onClientClearButtonClick(client)}, "clear"),
     ]),
 
     h("div", {class: "client__account"},
       account
-        ? accountView({account})
+        ? accountView({account}, action)
         : null,
     ),
 
-    h("div", {class: "client__timeline"},
+    h("div", {class: "client__timeline", scrollTop: client.scrollY}, [
       timeline
-        ? timelineView({timeline})
+        ? timelineView({timeline}, action)
         : null,
-    ),
+    ]),
   ])
+
 
 export default client;

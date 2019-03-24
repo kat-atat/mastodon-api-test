@@ -23,7 +23,7 @@ const account = ({account})=>
     h("span", {class: "account__header-static", "data-header-static": account.header_static}),
     h("span", {class: "account__emojis"},
       account.emojis.map((emoji)=>
-        emojiView({emoji})
+        emojiView({emoji}, action)
       ),
     ),
   ])

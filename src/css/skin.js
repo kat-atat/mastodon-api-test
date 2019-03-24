@@ -44,6 +44,21 @@ export default `
   color: rgb(223, 218, 217);
 }
 
+.status--sensitive>.status__show-sensitive-toggle {
+  background: rgb(75, 75, 75);
+  color: rgb(223, 218, 217);
+  border-style: outset;
+  border-color: rgba(75, 75, 75, 0.50);
+}
+
+.status--sensitive>.status__show-sensitive-toggle::before {
+  content: "👁";
+}
+
+.status--show-sensitive>.status__show-sensitive-toggle {
+  border-style: inset;
+}
+
 .status--sensitive>.status__spoiler-text:empty::before {
   content: var(--sensitive-text, "閲覧注意");
 }
