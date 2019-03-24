@@ -36,9 +36,6 @@ export default `
 .status .account>.account__acct { grid-area: c; }
 
 
-:not(.status--sensitive)>.status__show-sensitive-toggle,
-:not(.status--sensitive)>.status__spoiler-text,
-.status--show-sensitive>.status__spoiler-text { display: none; }
 
 .status__spoiler-text {
   display: flex;
@@ -52,6 +49,11 @@ export default `
 
 .status__show-sensitive-toggle {
   border-width: 4px;
-  text-align: center;
 }
+
+
+
+:not(.status--sensitive)>.status__show-sensitive-toggle,
+:not(.status--sensitive)>.status__spoiler-text,
+.status--show-sensitive>.status__spoiler-text { display: none; }
 `;

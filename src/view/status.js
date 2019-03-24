@@ -1,5 +1,6 @@
 import {h, app} from "../hyperapp.js";
 import attachmentView from "./attachment.js";
+import timeUtil from "../etc/timeUtil.js";
 
 const status = ({status}, action)=>
   h("div", {
@@ -26,9 +27,13 @@ const status = ({status}, action)=>
     h("span", {class: "status__replies-count", "data-replies-count": status.replies_count}),
     h("span", {class: "status__reblogs-count", "data-reblogs-count": status.reblogs_count}),
     h("span", {class: "status__favourites-count", "data-favourites-count": status.favourites_count}),
-    h("div", {class: "status__created-at"}, status.created_at),
-
     h("div", {
+      class: "status__created-at",
+      "data-relative-time": timeUtil.getRelativeTime(status.created_at),
+      "data-absolute-time": status.created_at,
+    }, status.created_at),
+
+    h("button", {
       class: "status__show-sensitive-toggle",
       onclick: ()=> action.onStatusShowSensitiveToggleClick(status),
     }),

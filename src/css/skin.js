@@ -73,4 +73,10 @@ export default `
 .status--sensitive>.status__spoiler-text:empty::before {
   content: var(--status__spoiler-text-content, "閲覧注意");
 }
+
+.status__created-at { visibility: hidden; }
+.status__created-at::before {
+  content: attr(data-relative-time);
+  visibility: visible;
+}
 `;
