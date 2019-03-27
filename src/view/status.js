@@ -6,7 +6,8 @@ const status = ({status}, action)=>
   h("div", {
     class: "status"
     + (status.sensitive ? " status--sensitive" : "")
-    + (status.showSensitive ? " status--show-sensitive" : ""),
+    + (status.showSensitive ? " status--show-sensitive" : "")
+    + (status.showAbsoluteTime ? " status--show-absolute-time" : ""),
   }, [
     h("div", {class: "status__account account"}, [
       h("span", {class: "account__avatar"}, h("img", {src: status.account.avatar})),
@@ -31,7 +32,7 @@ const status = ({status}, action)=>
       class: "status__created-at",
       "data-relative-time": timeUtil.getRelativeTime(status.created_at),
       "data-absolute-time": status.created_at,
-    }, status.created_at),
+    }),
 
     h("button", {
       class: "status__show-sensitive-toggle",
