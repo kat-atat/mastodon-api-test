@@ -12,17 +12,6 @@ const client = ({timeline, account, info, client}, action)=>
       h("p", {}, info),
     ]),
 
-    h("div", {class: "client__actions"}, [
-      h("button", {onclick: ()=> action.onClientHomeTimelineButtonClick(client)}, "Home"),
-      h("button", {onclick: ()=> action.onClientLocalTimelineButtonClick(client)}, "Local"),
-      h("button", {onclick: ()=> action.onClientLocalMediaTimelineButtonClick(client)}, "Local(media)"),
-      h("button", {onclick: ()=> action.onClientFederatedTimelineButtonClick(client)}, "Federated"),
-      h("button", {onclick: ()=> action.onClientFederatedMediaTimelineButtonClick(client)}, "Federated(media)"),
-      h("button", {onclick: ()=> action.onClientScrollTopButtonClick(client)}, "scrollTop"),
-      h("button", {onclick: ()=> action.onClientAccountButtonClick(client)}, "Account"),
-      h("button", {onclick: ()=> action.onClientClearButtonClick(client)}, "clear"),
-    ]),
-
     h("div", {class: "client__account"},
       account
         ? accountView({account}, action)
@@ -33,6 +22,48 @@ const client = ({timeline, account, info, client}, action)=>
       timeline
         ? timelineView({timeline}, action)
         : null,
+    ]),
+
+    h("div", {class: "client__actions actions"}, [
+      h("span", {
+        class: "actions__home-timeline button",
+        onclick: ()=> action.onClientHomeTimelineButtonClick(client),
+      }),
+
+      h("span", {
+        class: "actions__local-timeline button",
+        onclick: ()=> action.onClientLocalTimelineButtonClick(client),
+      }),
+
+      h("span", {
+        class: "actions__local-media-timeline button",
+        onclick: ()=> action.onClientLocalMediaTimelineButtonClick(client),
+      }),
+
+      h("span", {
+        class: "actions__federated-timeline button",
+        onclick: ()=> action.onClientFederatedTimelineButtonClick(client),
+      }),
+
+      h("span", {
+        class: "actions__federated-media-timeline button",
+        onclick: ()=> action.onClientFederatedMediaTimelineButtonClick(client),
+      }),
+
+      h("span", {
+        class: "actions__scroll-top button",
+        onclick: ()=> action.onClientScrollTopButtonClick(client),
+      }),
+
+      h("span", {
+        class: "actions__account button",
+        onclick: ()=> action.onClientAccountButtonClick(client),
+      }),
+
+      h("span", {
+        class: "actions__clear button",
+        onclick: ()=> action.onClientClearButtonClick(client),
+      }),
     ]),
   ])
 
