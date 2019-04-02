@@ -4,6 +4,8 @@ export default `
   padding: 0;
   border-width: 0;
   box-sizing: border-box;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: pixerated;
 }
 
 img {
