@@ -2,42 +2,62 @@ import {h, app} from "../hyperapp.js";
 import attachmentView from "./attachment.js";
 import timeUtil from "../etc/timeUtil.js";
 
+const display_name = (status)=>
+  status.account.display_name
+  ? status.account.display_name // TODO: emoji process
+  : status.account.username;
+
+const acct = (status)=>
+  "@" + status.account.acct; // TODO: ellipsis process
+
+const content = (status)=>
+  status.content; // TODO: emoji process
+
+const isPreSensitive = (status)=>
+  !status.spoiler_text && status.media_attachments.length === 0 && status.sensitive;
+
 const status = ({status}, action)=>
   h("div", {
     class: "status"
-    + (status.sensitive ? " status--sensitive" : "")
-    + (status.showSensitive ? " status--show-sensitive" : "")
-    + (status.showAbsoluteTime ? " status--show-absolute-time" : ""),
+    + (status.sensitive ? " status--sensitive" : " status--no-sensitive")
+    + (isPreSensitive(status) ? " status--pre-sensitive" : "")
+    + (status.sensitive ? (status.showSensitive ? " status--show-sensitive" : " status--hide-sensitive") : "")
   }, [
-    h("div", {class: "status__account account"}, [
-      h("span", {class: "account__avatar"}, h("img", {src: status.account.avatar})),
-      h("span", {class: "account__display-name"}, status.account.display_name),
-      h("span", {class: "account__username"}, status.account.username),
-      h("span", {class: "account__acct"}, status.account.acct),
-    ]),
-    h("div", {
-      class: "status__spoiler-text",
-      onclick: ()=> action.onStatusSpoilerTextClick(status),
-    }, status.spoiler_text),
-    h("div", {class: "status__content", innerHTML: status.content}),
-    h("div", {class: "status__media-attachments"},
+    h("span", {class: "status__metadata status__account-avatar"}, h("img", {src: status.account.avatar})),
+    h("span", {class: "status__metadata status__account-display-name", innerHTML: display_name(status)}),
+    h("span", {class: "status__metadata status__account-acct"}, acct(status)),
+    h("div", {class: "status__contents status__content", innerHTML: content(status)}),
+    h("div", {class: "status__contents status__media-attachments"},
       status.media_attachments.map((attachment)=>
         attachmentView({attachment}, action)
       ),
     ),
-    h("span", {class: "status__replies-count", "data-replies-count": status.replies_count}),
-    h("span", {class: "status__reblogs-count", "data-reblogs-count": status.reblogs_count}),
-    h("span", {class: "status__favourites-count", "data-favourites-count": status.favourites_count}),
     h("div", {
-      class: "status__created-at",
-      "data-relative-time": timeUtil.getRelativeTime(status.created_at),
-      "data-absolute-time": status.created_at,
-    }),
+      class: "status__sensitives status__spoiler-text",
+      onclick: ()=> action.onStatusSpoilerTextClick(status),
+    }, status.spoiler_text),
+    h("span", {class: "status__metadata status__replies-count"}, [
+      h("span", {class: "icon icon--reply"}),
+      status.replies_count,
+    ]),
+    h("span", {class: "status__metadata status__reblogs-count"}, [
+      h("span", {class: "icon icon--reblog"}),
+      status.reblogs_count,
+    ]),
+    h("span", {class: "status__metadata status__favourites-count"}, [
+      h("span", {class: "icon icon--favourite"}),
+      status.favourites_count,
+    ]),
+    h("div", {class: "status__metadata status__created-at"},
+      status.showAbsoluteTime ? status.created_at : timeUtil.getRelativeTime(status.created_at),
+    ),
 
     h("button", {
-      class: "status__show-sensitive-toggle",
+      class: "status__sensitives status__show-sensitive-toggle",
       onclick: ()=> action.onStatusShowSensitiveToggleClick(status),
-    }),
+    },
+      h("span", {class: "icon icon--show-sensitive"}),
+    ),
   ])
 
 export default status;
