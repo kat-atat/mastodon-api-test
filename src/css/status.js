@@ -17,9 +17,9 @@ export default `
 
 .status>.status__content { grid-area: f; }
 .status>.status__media-attachments { grid-area: g; }
-.status>.status__replies-count { grid-area: h; }
-.status>.status__reblogs-count { grid-area: i; }
-.status>.status__favourites-count { grid-area: j; }
+.status>.status__replies-count { grid-area: h; align-self: center; }
+.status>.status__reblogs-count { grid-area: i; align-self: center; }
+.status>.status__favourites-count { grid-area: j; align-self: center; }
 .status>.status__created-at { grid-area: d; align-self: center; }
 .status>.status__show-sensitive-toggle { grid-area: k; }
 .status>.status__account-avatar { grid-area: a;}
