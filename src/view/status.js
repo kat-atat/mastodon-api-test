@@ -8,13 +8,14 @@ const display_name = (status)=>
   : status.account.username;
 
 const acct = (status)=>
-  "@" + status.account.acct; // TODO: ellipsis process
+  "@" + status.account.acct; // TODO: url ellipsis process
 
 const content = (status)=>
-  status.content; // TODO: emoji process
+  status.content; // TODO: emoji process, url ellipsis process
 
 const isPreSensitive = (status)=>
   !status.spoiler_text && status.media_attachments.length === 0 && status.sensitive;
+
 
 const status = ({status}, action)=>
   h("div", {
@@ -33,9 +34,12 @@ const status = ({status}, action)=>
       ),
     ),
     h("div", {
-      class: "status__sensitives status__spoiler-text",
+      class: "status__sensitives status__spoiler-text spoiler"
+      + (status.showSensitive ? " spoiler--open" : " spoiler--close"),
       onclick: ()=> action.onStatusSpoilerTextClick(status),
-    }, status.spoiler_text),
+    },
+      h("span", {class: "spoiler__content"}, status.spoiler_text),
+    ),
     h("span", {class: "status__metadata status__replies-count"}, [
       h("span", {class: "icon icon--reply"}),
       status.replies_count,
@@ -52,8 +56,9 @@ const status = ({status}, action)=>
       status.showAbsoluteTime ? status.created_at : timeUtil.getRelativeTime(status.created_at),
     ),
 
-    h("button", {
-      class: "status__sensitives status__show-sensitive-toggle",
+    h("span", {
+      class: "status__sensitives status__show-sensitive-toggle toggle"
+      + (status.showSensitive ? " toggle--checked" : " toggle--unchecked"),
       onclick: ()=> action.onStatusShowSensitiveToggleClick(status),
     },
       h("span", {class: "icon icon--show-sensitive"}),
