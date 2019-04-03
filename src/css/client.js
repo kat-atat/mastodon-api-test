@@ -3,7 +3,13 @@ export default `
  * static section
  */
 .client {
+  display: grid;
+  grid-auto-flow: row;
 }
+
+.client>.client__actions { order: 1; }
+.client>.client__timeline { order: 2; }
+.client>.client__account { order: 2; }
 
 .client__timeline {
   max-height: 100vh;
@@ -14,7 +20,7 @@ export default `
 
 .client__actions {
   display: grid;
-  grid-auto-flow: column;
+  grid-template-columns: repeat(auto-fill, minmax(25%, 1fr));
   gap: 0 2mm;
 }
 
@@ -34,9 +40,16 @@ export default `
   padding: 1em;
 }
 
+.client__actions {
+  padding: 1mm 0.5mm;
+}
+
 .client {
   background-color: rgb(199, 101, 63);
   color: rgb(223, 218, 217);
+  --button-background: rgb(223, 218, 217);
+  --button-color: rgb(199, 101, 63);
+  --button-border-color: rgb(199, 101, 63);
 }
 
 

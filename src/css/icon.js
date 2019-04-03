@@ -6,19 +6,19 @@ export default `
   vertical-align: baseline;
 }
 
-.icon--reply:before {
+.icon--reply::before {
   content: "↩️";
 }
 
-.icon--reblog:before {
+.icon--reblog::before {
   content: "🔁";
 }
 
-.icon--favourite:before {
+.icon--favourite::before {
   content: "⭐︎";
 }
 
-.icon--show-sensitive:before {
+.icon--show-sensitive::before {
   content: "👁‍🗨";
 }
 
