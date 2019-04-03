@@ -1,5 +1,7 @@
 import base from "./base.js";
 import button from "./button.js";
+import toggle from "./toggle.js";
+import spoiler from "./spoiler.js";
 import icon from "./icon.js";
 import client from "./client.js";
 import timeline from "./timeline.js";
@@ -10,6 +12,8 @@ import skin from "./skin.js";
 export default ""
 + base
 + button
++ toggle
++ spoiler
 + icon
 + client
 + timeline
