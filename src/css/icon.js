@@ -6,6 +6,10 @@ export default `
   vertical-align: baseline;
 }
 
+.icon::before {
+  padding: 0.25em 0.5em;
+}
+
 .icon--reply::before {
   content: "↩️";
 }
