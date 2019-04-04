@@ -21,6 +21,11 @@ export default `
 }
 
 
+.spoiler--close>.spoiler__content {
+  padding: 1em;
+}
+
+
 .spoiler {
   background: var(--spoiler-background);
   color: var(--spoiler-color);

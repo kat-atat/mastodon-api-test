@@ -7,10 +7,10 @@ export default `
   grid-template:
   "a b b b b b d" auto
   "a c c c c c d" auto
-  "a e e e e e ." auto
-  "a f f f f f ." minmax(3em, auto)
-  "a g g g g g ." auto
-  "k k . h i j ." auto / minmax(3em, 15%) 1fr 1fr 1fr 1fr 1fr minmax(3em, 8%);
+  "a e e e e e e" auto
+  "a f f f f f f" minmax(3em, auto)
+  "a g g g g g g" auto
+  "k k . h i j ." auto / minmax(2em, 15%) 1fr 1fr 1fr 1fr 1fr minmax(3em, 8%);
   gap: 0.5em;
   max-width: 48em;
 }
@@ -41,13 +41,7 @@ export default `
 .status {
   border-style: outset;
   border-width: 2px;
-  padding: 1em;
-}
-
-.status__spoiler-text,
-.status__content,
-.status__media-attachments {
-  padding: 0 0.5em;
+  padding: 1em 1em 0.5em;
 }
 
 .status__account-display-name { font-weight: 700; }
